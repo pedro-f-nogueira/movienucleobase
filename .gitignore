@@ -8,3 +8,9 @@
 Session.vim
 .netrwhist
 *~
+
+### python ###
+*.pyc
+
+### various formats ###
+*.html
