@@ -10,29 +10,6 @@ class classMovieCharacter:
         self.charactersInteractedWith = filter(None, self.charactersInteractedWith)
         self.mentionedCharacters = filter(None, self.mentionedCharacters)
 
-    def addMentionedCharacter(self, name):
-        listElementFound = 0
-
-        for l in self.mentionedCharacters:
-            if l[0]==name:
-                l[1] = l[1] + 1
-                listElementFound = 1
-                break
-
-        if listElementFound==0:
-            self.mentionedCharacters.append([name, 1])
-
-        logging.debug("The character " + self.name + " mentioned " + name)
-
-    def listMentionedCharacters(self):
-        if len(self.mentionedCharacters):
-            print "The character " + self.name + " mentioned the following characters:"
-
-            for l in self.mentionedCharacters:
-                print "    - " + l[0] + " " + str(l[1]) + " times"
-        else:
-            print "The character did not mentioned anyone."
-
     def addCharactersInteractedWith(self, nameList):
         addedCharacter = []
         nameListLength = len(nameList)
@@ -59,6 +36,20 @@ class classMovieCharacter:
 
             logging.debug("The character " + self.name + " interacted with: " + ", ".join(addedCharacter))
 
+    def addMentionedCharacter(self, name):
+        listElementFound = 0
+
+        for l in self.mentionedCharacters:
+            if l[0]==name:
+                l[1] = l[1] + 1
+                listElementFound = 1
+                break
+
+        if listElementFound==0:
+            self.mentionedCharacters.append([name, 1])
+
+        logging.debug("The character " + self.name + " mentioned " + name)
+
     def listCharactersInteractedWith(self):
         if len(self.charactersInteractedWith)>0:
             print "The character " + self.name + " interacted with:"
@@ -67,3 +58,12 @@ class classMovieCharacter:
                 print "    - " + l[0] + " " + str(l[1]) + " times"
         else:
             print "The character " + self.name + " did not have any interactions."
+
+    def listMentionedCharacters(self):
+        if len(self.mentionedCharacters):
+            print "The character " + self.name + " mentioned the following characters:"
+
+            for l in self.mentionedCharacters:
+                print "    - " + l[0] + " " + str(l[1]) + " times"
+        else:
+            print "The character did not mentioned anyone."
