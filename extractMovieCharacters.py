@@ -1,4 +1,5 @@
 import re
+import difflib
 
 from classMovieCharacter import *
 
@@ -25,7 +26,13 @@ def extractMovieCharacters(movieScript):
     
         # Check if the character was already collected in the list
         for l2 in movieCharactersList:
-             if tmp in l2.name:
+            similatityBetweenStrings = difflib.SequenceMatcher(None, tmp, l2.name).ratio()
+            sameString = 0
+
+            if similatityBetweenStrings>0.8 and similatityBetweenStrings<1.0:
+                sameString = 1
+
+            if tmp in l2.name and sameString==0:
                 movieCharacterAlreadyListed = 1
                 l2.n_scenes_real = l2.n_scenes_real + 1
     
