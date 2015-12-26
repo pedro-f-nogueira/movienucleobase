@@ -1,4 +1,5 @@
 import re
+import logging
 
 from classMovieCharacter import *
 
@@ -7,9 +8,9 @@ def processMovieSingleScene(movieScene, movieCharactersList):
      
     movieSceneElements = re.findall(p, movieScene)
 
-    n                   = 0
-    movieCharacterFound = ""
-    CENAS = []
+    n = 0
+    movieCharacterFromScene = ""
+    charactersInteractedWith = []
 
     for l1_tmp in movieSceneElements:
         for l1 in l1_tmp:
@@ -21,19 +22,32 @@ def processMovieSingleScene(movieScene, movieCharactersList):
             #       ...
             if n%2==0:
                 # Consider valid characters the names that are centered
-                numberWhitespaces = len(l1) - len(l1.lstrip(' '))
+                nWhitespacesinStartOfString = len(l1) - len(l1.lstrip(' '))
 
-                if numberWhitespaces<20 or numberWhitespaces>30:
+                if nWhitespacesinStartOfString<20 or nWhitespacesinStartOfString>30:
                     n = n + 1
                     continue
 
-                movieCharacterFound = l1.split("(")[0]
-                movieCharacterFound = " ".join(movieCharacterFound.split())
-                if movieCharacterFound not in CENAS and movieCharacterFound != "":
-                    CENAS.append(movieCharacterFound)
+                movieCharacterFromScene = l1.split("(")[0]
+                movieCharacterFromScene = " ".join(movieCharacterFromScene.split())
+
+                if movieCharacterFromScene not in charactersInteractedWith and movieCharacterFromScene != "":
+                    charactersInteractedWith.append(movieCharacterFromScene)
             else:
                 for l2 in movieCharactersList:
                     if l2.name.lower() in l1.lower():
-                        print movieCharacterFound + " is interacting with " + l2.name
+                        #print movieCharacterFromScene + " is mentioning " + l2.name
+
+                        for l3 in movieCharactersList:
+                            if l3.name==movieCharacterFromScene:
+                                l3.addMentionedCharacter(l2.name)
+                                break
 
             n = n + 1
+
+    for l1 in movieCharactersList:
+        for l2 in charactersInteractedWith:
+            if l1.name==l2:
+                l1.addCharactersInteractedWith(charactersInteractedWith)
+
+    return charactersInteractedWith

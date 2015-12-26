@@ -1,12 +1,13 @@
 import re
 import difflib
+import logging
 
 from classMovieCharacter import *
 
 def extractMovieCharacters(movieScript):
     movieCharactersExtracted    = []
     movieCharactersList         = []
-    movieCharacterAlreadyListed     = 0
+    movieCharacterAlreadyListed = 0
 
     for m in re.finditer(ur'<b>(?!EXT)(?!SUPER)(?P<movie_char>.*?)<\/b>(?P<movie_text>.*?)(?=<b>)', movieScript):
         movieCharactersExtracted.append(m.group("movie_char"))
@@ -40,7 +41,7 @@ def extractMovieCharacters(movieScript):
                 l2.n_scenes_real = l2.n_scenes_real + 1
     
         if movieCharacterAlreadyListed==0:
-            print "Adding character... " + tmp
-            movieCharactersList.append(classMovieCharacter(tmp, 0, [[]]))
+            logging.debug("Adding character... " + tmp)
+            movieCharactersList.append(classMovieCharacter(tmp, 0, [[]], [[]]))
 
     return movieCharactersList
