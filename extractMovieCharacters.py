@@ -26,10 +26,14 @@ def extractMovieCharacters(movieScript):
     
         # Check if the character was already collected in the list
         for l2 in movieCharactersList:
+
+            # The "Fellowship of the Ring" script sometimes misspells "FRODO" as "FRO DO"
+            # This function attempts to fix that
             similatityBetweenStrings = difflib.SequenceMatcher(None, tmp, l2.name).ratio()
             sameString = 0
 
-            if similatityBetweenStrings>0.8 and similatityBetweenStrings<1.0:
+            if similatityBetweenStrings>0.9 and similatityBetweenStrings<1.0:
+                print "Possible dupe: " + tmp + " ; " + l2.name
                 sameString = 1
 
             if tmp in l2.name and sameString==0:
