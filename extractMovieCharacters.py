@@ -33,7 +33,6 @@ def extractMovieCharacters(movieScript):
             sameString = 0
 
             if similatityBetweenStrings>0.9 and similatityBetweenStrings<1.0:
-                print "Possible dupe: " + tmp + " ; " + l2.name
                 sameString = 1
 
             if tmp in l2.name and sameString==0:
