@@ -35,7 +35,7 @@ def extractMovieCharacters(movieScript):
             if similatityBetweenStrings>0.9 and similatityBetweenStrings<1.0:
                 sameString = 1
 
-            if tmp in l2.name and sameString==0:
+            if tmp in l2.name or sameString==1:
                 movieCharacterAlreadyListed = 1
                 l2.n_scenes_real = l2.n_scenes_real + 1
     
