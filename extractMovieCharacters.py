@@ -19,12 +19,13 @@ def extractMovieCharacters(movieScript):
         numberWhitespaces = len(l1) - len(l1.lstrip(' '))
 
         if numberWhitespaces<20 or numberWhitespaces>30:
+            logging.debug("Rejecting possible invalid character due to the number of whitespaces at the start of the string (" + str(numberWhitespaces) + "): " + l1)
             continue
         
         # Remove "(V.O.)" and "(CONT'D)" from characters' names
         tmp = l1.split("(")[0]
         tmp = " ".join(tmp.split())
-    
+
         # Check if the character was already collected in the list
         for l2 in movieCharactersList:
 
@@ -34,6 +35,7 @@ def extractMovieCharacters(movieScript):
             sameString = 0
 
             if similatityBetweenStrings>0.9 and similatityBetweenStrings<1.0:
+                logging.debug("Possible character already added: " + tmp)
                 sameString = 1
 
             if tmp in l2.name or sameString==1:
@@ -42,6 +44,6 @@ def extractMovieCharacters(movieScript):
     
         if movieCharacterAlreadyListed==0:
             logging.debug("Adding character... " + tmp)
-            movieCharactersList.append(classMovieCharacter(tmp, 0, [[]], [[]]))
+            movieCharactersList.append(classMovieCharacter(tmp, 0, [[]], [[]], []))
 
     return movieCharactersList
