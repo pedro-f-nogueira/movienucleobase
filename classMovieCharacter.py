@@ -1,14 +1,18 @@
 import logging
 
 class classMovieCharacter:
-    def __init__(self, name, n_scenes_real, charactersInteractedWith, mentionedCharacters):
+    def __init__(self, name, real_name, gender, n_scenes_real, charactersInteractedWith, mentionedCharacters, appearedScenes):
         self.name = name
+        self.real_name = name
+        self.gender = gender
         self.n_scenes_real = n_scenes_real
         self.charactersInteractedWith = charactersInteractedWith
         self.mentionedCharacters = mentionedCharacters
+        self.appearedScenes = appearedScenes
 
         self.charactersInteractedWith = filter(None, self.charactersInteractedWith)
         self.mentionedCharacters = filter(None, self.mentionedCharacters)
+        self.appearedScenes = filter(None, self.appearedScenes)
 
     def addCharactersInteractedWith(self, nameList):
         addedCharacter = []
@@ -50,6 +54,10 @@ class classMovieCharacter:
 
         logging.debug("The character " + self.name + " mentioned " + name)
 
+    def addAppearedScene(self, nScene):
+        logging.debug("The character " + self.name + " appears in the scene " + str(nScene))
+        self.appearedScenes.append(nScene)
+
     def listCharactersInteractedWith(self):
         if len(self.charactersInteractedWith)>0:
             print "The character " + self.name + " interacted with:"
@@ -67,3 +75,9 @@ class classMovieCharacter:
                 print "    - " + l[0] + " " + str(l[1]) + " times"
         else:
             print "The character did not mentioned anyone."
+
+    def listAppearedScenes(self):
+        if self.appearedScenes:
+            print "The character " + self.name + " appeared in the following scenes: " + ", ".join(str(i) for i in self.appearedScenes)
+        else:
+            print "The character did not appear in any scenes."

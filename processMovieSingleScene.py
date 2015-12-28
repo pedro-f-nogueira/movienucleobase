@@ -3,7 +3,7 @@ import logging
 
 from classMovieCharacter import *
 
-def processMovieSingleScene(movieScene, movieCharactersList):
+def processMovieSingleScene(movieScene, movieCharactersList, nScene):
     p = re.compile(ur'<b>(?!EXT)(?!SUPER)(?P<movie_char>.*?)<\/b>(?P<movie_text>.*?)(?=<b>)', re.MULTILINE | re.DOTALL)
      
     movieSceneElements = re.findall(p, movieScene)
@@ -49,5 +49,6 @@ def processMovieSingleScene(movieScene, movieCharactersList):
         for l2 in charactersInteractedWith:
             if l1.name==l2:
                 l1.addCharactersInteractedWith(charactersInteractedWith)
+                l1.addAppearedScene(nScene)
 
     return charactersInteractedWith
