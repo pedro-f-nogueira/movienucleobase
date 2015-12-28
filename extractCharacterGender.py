@@ -5,7 +5,7 @@ import logging
 def extractCharacterGender(name):
     logging.debug("extractCharacterGender(): Attempting to get gender from character: " + name)
 
-    api_key = open(".api_key").read()
+    api_key = open("api_key").read()
 
     query = name
     service_url = 'https://www.googleapis.com/freebase/v1/search'
