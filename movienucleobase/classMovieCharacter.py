@@ -1,14 +1,13 @@
 import logging
 
 class classMovieCharacter:
-    def __init__(self, name, real_name, gender, n_scenes_real, charactersInteractedWith, mentionedCharacters, appearedScenes):
+    def __init__(self, name, real_name="", gender=""):
         self.name = name
-        self.real_name = name
+        self.real_name = real_name
         self.gender = gender
-        self.n_scenes_real = n_scenes_real
-        self.charactersInteractedWith = charactersInteractedWith
-        self.mentionedCharacters = mentionedCharacters
-        self.appearedScenes = appearedScenes
+        self.charactersInteractedWith = [[]]
+        self.mentionedCharacters = [[]]
+        self.appearedScenes = []
 
         self.charactersInteractedWith = filter(None, self.charactersInteractedWith)
         self.mentionedCharacters = filter(None, self.mentionedCharacters)
