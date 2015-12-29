@@ -12,7 +12,7 @@ import logging
 
 from classMovieCharacter import *
 
-def extract_movie_characters(movie_html_script):
+def extract_movie_characters(imsdb_movie_script):
     """This function receives as a parameter a list containing the movie
     lines in the format of the IMSDb HTML page.
 
@@ -31,7 +31,7 @@ def extract_movie_characters(movie_html_script):
     No repeated characters shall be added to the list.
 
     Args:
-        movie_html_script (list of strings): The file containing the
+        imsdb_movie_script (list of strings): The file containing the
         IMSDb HTML page
 
     Returns:
@@ -46,9 +46,9 @@ def extract_movie_characters(movie_html_script):
     movie_characters_list = []
 
     # Regex used to extract the movie characters
-    regex_code = ur'<b>(?!EXT)(?!SUPER)(?P<movie_char>.*?)<\/b>(?P<movie_text>.*?)(?=<b>)'
+    regex = ur'<b>(?!EXT)(?!SUPER)(?P<movie_char>.*?)<\/b>(?P<movie_text>.*?)(?=<b>)'
 
-    for m in re.finditer(regex_code, movie_html_script):
+    for m in re.finditer(regex , imsdb_movie_script):
         movie_extracted_characters.append(m.group('movie_char'))
     
     for l in movie_extracted_characters:
@@ -150,6 +150,7 @@ def similar_movie_character_already_added(movie_characters_list, movie_character
         Bool: True if already exists a character with a similar name,
         False otherwise
     """
+
     logger = logging.getLogger(__name__)
 
     # The "Fellowship of the Ring" script sometimes misspells "FRODO" as
@@ -166,3 +167,40 @@ def similar_movie_character_already_added(movie_characters_list, movie_character
             return True
     else:
         return False
+
+def extract_movie_scenes(imsdb_movie_script):
+    """This function will analyze the IMSDb HTML page and it will return
+    every movie scene in a list of string.
+
+    The function parses the HTML page using a regex code which considers
+    a movie scene any text from the following list of tags until the next
+    same list of tags:
+        - BLACK SCREEN
+        - EXT.
+        - INT.
+
+    Each scene will be stored as a string in a list of string.
+
+    The scenes can, and should, contain:
+        - Movie characters
+        - Character's lines
+
+    Args:
+        imsdb_movie_script (list of strings): The file containing the
+        IMSDb HTML page
+
+    Returns:
+        List of strings: The returned list contains each individual scene
+        from the movie
+    """
+    logger = logging.getLogger(__name__)
+    
+    logger.info('Extracting all the scenes from the movie script...')
+
+    regex = ur'(<pre>BLACK SCREEN|<b>EXT\.|<b>INT\.)(?P<movie_text>.*?)(?=<b>(EXT\.|INT\.))'
+    movie_scenes_list = []
+
+    for m in re.finditer(regex, imsdb_movie_script):
+        movie_scenes_list.append(m.group('movie_text'))
+     
+    return movie_scenes_list

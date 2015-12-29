@@ -7,7 +7,6 @@ import imsdb.filehandlers
 import imsdb.dataextraction
 
 from classMovieCharacter import *
-from extractMovieScenes import *
 from processMovieSingleScene import *
 from plotCharacterTimeline import *
 from extractCharacterGender import *
@@ -45,7 +44,7 @@ if __name__ == '__main__':
         print '    - ' + l.name + ' (' + l.gender + ')'
 
     # Return the list of the scenes in the movie
-    movieScenesList = extractMovieScenes(imsdb_movie_script)
+    movieScenesList = imsdb.dataextraction.extract_movie_scenes(imsdb_movie_script)
 
     # Draw the interactions
     for i, movieScene in enumerate(movieScenesList):
