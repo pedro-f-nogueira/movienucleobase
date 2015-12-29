@@ -1,6 +1,6 @@
 """
 .. module:: filehandlers
-    :synopsis: A module to handle the HTML pages from IMSDb
+    :synopsis: A module to handle the HTML files from IMSDb
 
 .. moduleauthor:: Pedro Araujo <pedroaraujo@colorlesscube.com>
 .. moduleauthor:: Pedro Nogueira <pedro.fig.nogueira@gmail.com>
