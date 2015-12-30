@@ -12,12 +12,13 @@ import logging
 
 from classMovieCharacter import *
 
-def extract_movie_characters(imsdb_movie_script):
-    """This function receives as a parameter a list containing the movie
-    lines in the format of the IMSDb HTML page.
+def extract_characters(imsdb_movie_script):
+    """ Extract the movie characters from a movie script into a list.
 
-    The HTML page will be parsed using a regular expression which will
-    extract all the possible candidates for movie characters.
+    This function receives as a parameter a list containing the movie
+    lines in the format of the IMSDb HTML page. The HTML page will be
+    parsed using a regular expression which will extract all the possible
+    candidates for movie characters.
 
     After the extraction of those candidates, the function will reject all
     false positives classified as such by the function valid_movie_character().
@@ -64,7 +65,7 @@ def extract_movie_characters(imsdb_movie_script):
             logger.debug('Rejecting possible invalid character: ' + movie_character_name)
             continue
 
-        if similar_movie_character_already_added(movie_characters_list, movie_character_name):
+        if similar_character_already_added(movie_characters_list, movie_character_name):
             continue
 
         # Check if the character was already collected in the list
@@ -77,9 +78,8 @@ def extract_movie_characters(imsdb_movie_script):
 
     return movie_characters_list
 
-def extract_movie_scenes(imsdb_movie_script):
-    """This function will analyze the IMSDb HTML page and it will return
-    every movie scene in a list of string.
+def extract_scenes(imsdb_movie_script):
+    """Parse the movie script and collect all movie scenes in the movie script.
 
     The function parses the HTML page using a regex code which considers
     a movie scene any text from the following list of tags until the next
@@ -115,8 +115,7 @@ def extract_movie_scenes(imsdb_movie_script):
     return movie_scenes_list
 
 def valid_movie_character(possible_movie_character_name):
-    """This function analyzes the candidate to be added to the movie
-    character list and detects if it is a valid character of not.
+    """ Detect if the movie character is valid or not.
 
     The function is needed because the regex used will parse the meta
     tags from the movie script, like 'INT', 'EXT' or 'CONTINUATION',
@@ -148,7 +147,7 @@ def valid_movie_character(possible_movie_character_name):
         return True
 
 def strip_unwanted_strings(movie_character_name):
-    """This function remove any unwanted strings from the character's names.
+    """This function removes any unwanted strings from the character's names.
 
     The unwanted strings are:
         - "(V.O.)"
@@ -169,8 +168,10 @@ def strip_unwanted_strings(movie_character_name):
 
     return stripped_movie_character_name
 
-def similar_movie_character_already_added(movie_characters_list, movie_character_name):
-    """The API assumes that the movie script has misspelled character names,
+def similar_character_already_added(movie_characters_list, movie_character_name):
+    """Checks if a similar name was already added to the collected characters.
+    
+    The API assumes that the movie script has misspelled character names,
     so this function checks if the new candidate to movie character has a
     similar character name already added to the list.
 

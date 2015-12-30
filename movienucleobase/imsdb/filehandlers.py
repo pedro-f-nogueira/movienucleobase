@@ -9,8 +9,7 @@
 import logging
 
 def open_movie_script(filename):
-    """This function receives the name of a HTML file and returns
-    the contents as a list.
+    """Receives the name of a HTML file and returns the contents as a list.
     
     The function attempts to remove the HTML header that comes before the
     movie script in order to avoid any unexpected behavior from the HTML tags.
