@@ -64,6 +64,7 @@ def retrieve_character_real_name(sub_wikia, movie_character_name):
                     ' ; Real name: ' + real_name)
         real_name = None
     else:
+        # Removing any "(disambiguation)" sub-strings
         real_name = real_name.split('(')[0].strip(' ')
 
     # Remove any special accents from the string
