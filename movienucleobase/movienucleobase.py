@@ -1,16 +1,16 @@
 import argparse
 
 import logging
-from logging.config import fileConfig
+import logging.config
 
 import imsdb.filehandlers
 import imsdb.dataextraction
+import imsdb.dataadjustment
 
 from classMovieCharacter import *
 from processMovieSingleScene import *
 from plotCharacterTimeline import *
 from extractCharacterGender import *
-from resolveMovieCharactersNames import *
 
 if __name__ == '__main__':
     # Process arguments from the command line
@@ -25,23 +25,19 @@ if __name__ == '__main__':
         nscenes = 0
 
     # Sets up the logging system
-    fileConfig('logging_config.ini', defaults={'logfilename': 'movienucleobase.log'})
+    logging.config.fileConfig('logging_config.ini', defaults={'logfilename': 'movienucleobase.log'})
     logger = logging.getLogger(__name__)
 
     # Loads the IMSDb movie script into a list
     # The script terminates if the script is empty
     imsdb_movie_script = imsdb.filehandlers.open_movie_script(args.filename)
 
-    # Extract movie characters
+    # Extract the movie characters
     movieCharactersList = imsdb.dataextraction.extract_movie_characters(imsdb_movie_script)
 
+    # Resolve each character's name
     for l in movieCharactersList:
-        l.real_name = resolve_real_movie_character_name("lotr" , l.name)
-
-    # List all info
-    print 'The movie characters are:'
-    for l in movieCharactersList:
-        print '    - ' + l.name + ' (' + l.gender + ')'
+        l.real_name = imsdb.dataadjustment.resolve_movie_character_real_name("lotr" , l.name)
 
     # Return the list of the scenes in the movie
     movieScenesList = imsdb.dataextraction.extract_movie_scenes(imsdb_movie_script)

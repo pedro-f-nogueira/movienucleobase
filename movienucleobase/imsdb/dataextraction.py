@@ -140,9 +140,9 @@ def valid_movie_character(possible_movie_character_name):
     numberWhitespaces = len(possible_movie_character_name) - len(possible_movie_character_name.lstrip(' '))
 
     if numberWhitespaces<20 or numberWhitespaces>30:
-        logger.debug('Rejecting possible invalid character due to the number' \
-                     'of whitespaces at the start of the string \
-                     (' + str(numberWhitespaces) + '): ' + possible_movie_character_name)
+        logger.debug('Rejecting possible invalid character due to the number ' +
+                     'of whitespaces at the start of the string ' +
+                     '(' + str(numberWhitespaces) + '): ' + possible_movie_character_name)
         return False
     else:
         return True
