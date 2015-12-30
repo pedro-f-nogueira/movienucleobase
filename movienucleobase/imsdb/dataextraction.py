@@ -9,8 +9,7 @@
 import re
 import difflib
 import logging
-
-from classMovieCharacter import *
+import imsdb.datastructures
 
 def extract_characters(imsdb_movie_script):
     """ Extract the movie characters from a movie script into a list.
@@ -24,7 +23,7 @@ def extract_characters(imsdb_movie_script):
     false positives classified as such by the function valid_movie_character().
 
     Each character will be added to a new object from the
-    class classMovieCharacter.
+    class MovieCharacter.
 
     Each object will then be added to a list of objects to be returned in
     the end of the function.
@@ -36,7 +35,7 @@ def extract_characters(imsdb_movie_script):
         IMSDb HTML page
 
     Returns:
-        list of classMovieCharacter: This list contains all the detected
+        list of MovieCharacter: This list contains all the detected
         movie characters from the IMSDb movie script
     """
 
@@ -74,7 +73,7 @@ def extract_characters(imsdb_movie_script):
                 break
         else:
             logger.info('Adding character... ' + movie_character_name)
-            movie_characters_list.append(classMovieCharacter(movie_character_name))
+            movie_characters_list.append(imsdb.datastructures.MovieCharacter(movie_character_name))
 
     return movie_characters_list
 
@@ -179,7 +178,7 @@ def similar_character_already_added(movie_characters_list, movie_character_name)
     of the already present movie characters' name in the list.
 
     Args:
-        movie_characters_list (list of classMovieCharacter): List of all movie
+        movie_characters_list (list of MovieCharacter): List of all movie
         characters already collected
         movie_character_name (string): The name of the candidate to
         movie character

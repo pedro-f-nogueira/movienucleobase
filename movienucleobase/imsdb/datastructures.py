@@ -1,7 +1,56 @@
+"""
+.. module:: datastructures
+    :synopsis: A module that provides the data structures to store movie data
+
+.. moduleauthor:: Pedro Araujo <pedroaraujo@colorlesscube.com>
+.. moduleauthor:: Pedro Nogueira <pedro.fig.nogueira@gmail.com>
+"""
+
 import logging
 
-class classMovieCharacter:
-    def __init__(self, name, real_name="", gender=""):
+class MovieData:
+    def __init__(self, title, sub_wikia):
+        self.title = title
+        self.sub_wikia = sub_wikia
+
+    def add_characters(self, characters):
+        self.characters = characters
+
+    def add_scenes(self, scenes):
+        self.scenes = scenes
+
+    def get_title(self):
+        return self.title
+
+    def get_sub_wikia(self):
+        return self.sub_wikia
+
+    def get_characters(self):
+        return self.characters
+
+    def get_scenes(self):
+        return self.scenes
+
+    def print_info(self):
+        print "Title of the movie:"
+        print "    - " + self.title
+        print "Subwikia:"
+        print "    - " + self.sub_wikia
+
+        self.print_characters()
+
+        return True
+
+    def print_characters(self):
+        print "Characters of the movie:"
+
+        for character in self.characters:
+            print "    - " + character.name + " ; " + character.real_name
+
+        return True
+
+class MovieCharacter:
+    def __init__(self, name, real_name = '', gender = ''):
         self.name = name
         self.real_name = real_name
         self.gender = gender

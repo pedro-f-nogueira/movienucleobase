@@ -6,17 +6,27 @@ import logging.config
 import imsdb.filehandlers
 import imsdb.dataextraction
 import imsdb.dataadjustment
+import imsdb.datastructures
 
-from classMovieCharacter import *
 from processMovieSingleScene import *
 from plotCharacterTimeline import *
-from extractCharacterGender import *
 
 if __name__ == '__main__':
     # Process arguments from the command line
     parser = argparse.ArgumentParser()
-    parser.add_argument('filename', help='Name of the file containing the movie script')
-    parser.add_argument('--nscenes', help='Number of scenes to process')
+
+    parser.add_argument('filename',
+                        help='Name of the file containing the movie script')
+
+    parser.add_argument('--nscenes',
+                        help='Number of scenes to process')
+
+    parser.add_argument('--movie_title',
+                        help='The title of the movie')
+
+    parser.add_argument('--sub_wikia',
+                        help='The subwikia associated to the movie')
+
     args = parser.parse_args()
 
     if args.nscenes:
@@ -24,8 +34,12 @@ if __name__ == '__main__':
     else:
         nscenes = 0
 
+    movie = imsdb.datastructures.MovieData(args.movie_title, args.sub_wikia)
+
     # Sets up the logging system
-    logging.config.fileConfig('logging_config.ini', defaults={'logfilename': 'movienucleobase.log'})
+    logconfig = 'logging_config.ini'
+    logfile = 'movienucleobase.log'
+    logging.config.fileConfig(logconfig, defaults={'logfilename': logfile})
     logger = logging.getLogger(__name__)
 
     # Loads the IMSDb movie script into a list
@@ -33,14 +47,16 @@ if __name__ == '__main__':
     imsdb_movie_script = imsdb.filehandlers.open_movie_script(args.filename)
 
     # Extract the movie characters
-    movieCharactersList = imsdb.dataextraction.extract_movie_characters(imsdb_movie_script)
+    movieCharactersList = imsdb.dataextraction.extract_characters(imsdb_movie_script)
 
     # Resolve each character's name
     for l in movieCharactersList:
-        l.real_name = imsdb.dataadjustment.resolve_movie_character_real_name("lotr" , l.name)
+        l.real_name = imsdb.dataadjustment.retrieve_character_real_name(movie.get_sub_wikia(), l.name)
+
+    movie.add_characters(movieCharactersList)
 
     # Return the list of the scenes in the movie
-    movieScenesList = imsdb.dataextraction.extract_movie_scenes(imsdb_movie_script)
+    movieScenesList = imsdb.dataextraction.extract_scenes(imsdb_movie_script)
 
     # Draw the interactions
     for i, movieScene in enumerate(movieScenesList):
@@ -52,9 +68,7 @@ if __name__ == '__main__':
             break
 
     # List all info
-    print 'The movie characters are:'
-    for l in movieCharactersList:
-        print '    - ' + l.real_name + ' (' + l.gender + ')'
+    movie.print_info()
         
     print ''
     for l in movieCharactersList:
