@@ -42,20 +42,20 @@ def extract_movie_characters(imsdb_movie_script):
     logger = logging.getLogger(__name__)
     logger.info('Extracting the characters...')
 
-    movie_extracted_characters = []
+    movie_characters_names_extracted = []
     movie_characters_list = []
 
     # Regex used to extract the movie characters
     regex = ur'<b>(?!EXT)(?!SUPER)(?P<movie_char>.*?)<\/b>(?P<movie_text>.*?)(?=<b>)'
 
     for m in re.finditer(regex , imsdb_movie_script):
-        movie_extracted_characters.append(m.group('movie_char'))
+        movie_characters_names_extracted.append(m.group('movie_char'))
     
-    for l in movie_extracted_characters:
-        if not valid_movie_character(l):
+    for name in movie_characters_names_extracted:
+        if not valid_movie_character(name):
             continue
         
-        movie_character_name = strip_unwanted_strings(l)
+        movie_character_name = strip_unwanted_strings(name)
 
         # TODO: Remove this hack and fix the issue
         # The movie script as characters represented as "Merry & Pippin"
@@ -192,10 +192,10 @@ def similar_movie_character_already_added(movie_characters_list, movie_character
 
     # The "Fellowship of the Ring" script sometimes misspells "FRODO" as
     # "FRO DO" this function attempts to fix that
-    for l in movie_characters_list:
+    for character in movie_characters_list:
         similarityRatio = difflib.SequenceMatcher(None,
                                                   movie_character_name.lower(),
-                                                  l.name.split(' ')[0].lower())
+                                                  character.name.split(' ')[0].lower())
         similarityRatio = similarityRatio.ratio()
 
         if similarityRatio>0.9 and similarityRatio<1.0:
