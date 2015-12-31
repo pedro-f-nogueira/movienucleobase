@@ -11,6 +11,7 @@ import difflib
 import logging
 import imsdb.datastructures
 
+
 def extract_characters(imsdb_movie_script):
     """ Extract the movie characters from a movie script into a list.
 
@@ -77,6 +78,7 @@ def extract_characters(imsdb_movie_script):
 
     return movie_characters_list
 
+
 def extract_scenes(imsdb_movie_script):
     """Parse the movie script and collect all movie scenes in the movie script.
 
@@ -113,6 +115,7 @@ def extract_scenes(imsdb_movie_script):
      
     return movie_scenes_list
 
+
 def valid_movie_character(possible_movie_character_name):
     """ Detect if the movie character is valid or not.
 
@@ -145,6 +148,7 @@ def valid_movie_character(possible_movie_character_name):
     else:
         return True
 
+
 def strip_unwanted_strings(movie_character_name):
     """This function removes any unwanted strings from the character's names.
 
@@ -166,6 +170,7 @@ def strip_unwanted_strings(movie_character_name):
     stripped_movie_character_name = " ".join(stripped_movie_character_name.split())
 
     return stripped_movie_character_name
+
 
 def similar_character_already_added(movie_characters_list, movie_character_name):
     """Checks if a similar name was already added to the collected characters.
@@ -204,3 +209,5 @@ def similar_character_already_added(movie_characters_list, movie_character_name)
             return True
     else:
         return False
+
+

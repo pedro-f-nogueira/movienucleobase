@@ -34,29 +34,34 @@ if __name__ == '__main__':
     else:
         nscenes = 0
 
-    movie = imsdb.datastructures.MovieData(args.movie_title, args.sub_wikia)
-
     # Sets up the logging system
     logconfig = 'logging_config.ini'
     logfile = 'movienucleobase.log'
     logging.config.fileConfig(logconfig, defaults={'logfilename': logfile})
     logger = logging.getLogger(__name__)
 
+    movie = imsdb.datastructures.MovieData(args.movie_title, args.sub_wikia)
+
     # Loads the IMSDb movie script into a list
     # The script terminates if the script is empty
     imsdb_movie_script = imsdb.filehandlers.open_movie_script(args.filename)
 
     # Extract the movie characters
-    movieCharactersList = imsdb.dataextraction.extract_characters(imsdb_movie_script)
+    characters = imsdb.dataextraction.extract_characters(imsdb_movie_script)
+    movie.set_characters(characters)
 
-    # Resolve each character's name
-    for l in movieCharactersList:
-        l.real_name = imsdb.dataadjustment.retrieve_character_real_name(movie.get_sub_wikia(), l.name)
+    # Retrieve each character's name
+    for character in movie.get_characters():
+        real_name = imsdb.dataadjustment.retrieve_character_real_name(
+            movie.get_sub_wikia(),
+            character.get_name())
 
-    movie.add_characters(movieCharactersList)
+        character.set_real_name(real_name)
+
 
     # Return the list of the scenes in the movie
-    movieScenesList = imsdb.dataextraction.extract_scenes(imsdb_movie_script)
+    scenes = imsdb.dataextraction.extract_scenes(imsdb_movie_script)
+    movie.set_scenes(scenes)
 
     # Draw the interactions
     for i, movieScene in enumerate(movieScenesList):

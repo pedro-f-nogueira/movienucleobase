@@ -8,6 +8,7 @@
 
 import logging
 
+
 def open_movie_script(filename):
     """Receives the name of a HTML file and returns the contents as a list.
     
@@ -45,3 +46,5 @@ def open_movie_script(filename):
             return imsdb_movie_script
     except:
         raise
+
+

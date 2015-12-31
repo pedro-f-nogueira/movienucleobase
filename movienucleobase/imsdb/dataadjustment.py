@@ -13,6 +13,7 @@ import __builtin__
 import json
 import urllib
 
+
 def retrieve_character_real_name(sub_wikia, movie_character_name):
     """Retrieve the complete name of the movie character.
     
@@ -72,6 +73,7 @@ def retrieve_character_real_name(sub_wikia, movie_character_name):
 
     return real_name
 
+
 def retrieve_character_gender(real_name, api_key_path = 'api_key'):
     logger = logging.getLogger(__name__)
     logger.debug('Attempting to get the gender from character: ' + real_name)
@@ -109,6 +111,7 @@ def retrieve_character_gender(real_name, api_key_path = 'api_key'):
     else:
         return nogender
 
+
 def get_freebase_character_id(real_name, freebase_api_key, freebase_search_url):
     logger = logging.getLogger(__name__)
 
@@ -126,3 +129,5 @@ def get_freebase_character_id(real_name, freebase_api_key, freebase_search_url):
         return
     else:
         return response['result'][0]['id']
+
+

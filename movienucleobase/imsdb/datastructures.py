@@ -8,6 +8,7 @@
 
 import logging
 
+
 class MovieData:
     """This class contains all information related to the movie being analyzed.
 
@@ -36,8 +37,8 @@ class MovieData:
         self.title = title
         self.sub_wikia = sub_wikia
 
-    def add_characters(self, characters):
-        """Add the characters.
+    def set_characters(self, characters):
+        """Set the characters.
         
         Args:
             characters (list of MovieCharacter): List of characters extracted
@@ -50,8 +51,8 @@ class MovieData:
         self.characters = characters
         return True
 
-    def add_scenes(self, scenes):
-        """Add the movie scenes.
+    def set_scenes(self, scenes):
+        """Set the movie scenes.
         
         Args:
             scenes (list of str): List of all scenes from the movie
@@ -124,6 +125,7 @@ class MovieData:
         for character in self.characters:
             print "    - " + character.name + " ; " + character.real_name
 
+
 class MovieCharacter:
     def __init__(self, name, real_name = '', gender = ''):
         self.name = name
@@ -136,6 +138,17 @@ class MovieCharacter:
         self.charactersInteractedWith = filter(None, self.charactersInteractedWith)
         self.mentionedCharacters = filter(None, self.mentionedCharacters)
         self.appearedScenes = filter(None, self.appearedScenes)
+
+    def set_real_name(self, real_name):
+        self.real_name = real_name
+
+        return True
+
+    def get_real_name(self, real_name):
+        return self.real_name
+
+    def get_name(self, name):
+        return self.name
 
     def addCharactersInteractedWith(self, nameList):
         addedCharacter = []
@@ -204,3 +217,5 @@ class MovieCharacter:
             print "The character " + self.name + " appeared in the following scenes: " + ", ".join(str(i) for i in self.appearedScenes)
         else:
             print "The character did not appear in any scenes."
+
+
