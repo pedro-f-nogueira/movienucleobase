@@ -9,45 +9,120 @@
 import logging
 
 class MovieData:
+    """This class contains all information related to the movie being analyzed.
+
+    This class stores mostly characters and scenes and it provides a number of
+    methods to access to these attributes.
+
+    Attributes:
+        title (str): Movie title
+        sub_wikia (str): Sub-wikia related to the movie. Used for completing
+        information about the movies' characters
+        characters (list of MovieCharacter): List of all characters in the movie
+        scenes (list of str): List of all scenes from the movie
+    """
+
     def __init__(self, title, sub_wikia):
+        """This function initializes the movie information.
+        
+        Args:
+            title (String): Movie title
+            sub_wikia (String): The sub-wikia related to the movie
+
+        Returns:
+            None
+        """
+
         self.title = title
         self.sub_wikia = sub_wikia
 
     def add_characters(self, characters):
+        """Add the characters.
+        
+        Args:
+            characters (list of MovieCharacter): List of characters extracted
+            from the movie script
+
+        Returns:
+            Bool: Always returns True.
+        """
+
         self.characters = characters
+        return True
 
     def add_scenes(self, scenes):
+        """Add the movie scenes.
+        
+        Args:
+            scenes (list of str): List of all scenes from the movie
+
+        Returns:
+            Bool: Always returns True.
+        """
+
         self.scenes = scenes
+        return True
 
     def get_title(self):
+        """Return the movie title as a string.
+        
+        Returns:
+            String: Movie title
+        """
+
         return self.title
 
     def get_sub_wikia(self):
+        """Return the movie sub-wikia
+        
+        Returns:
+            String: Movie sub-wikia
+        """
+
         return self.sub_wikia
 
     def get_characters(self):
+        """Return the movie characters
+        
+        Returns:
+            List of MovieCharacter: Movie characters
+        """
+
         return self.characters
 
     def get_scenes(self):
+        """Return the movie scenes
+        
+        Returns:
+            List of string: Movie scenes
+        """
+
         return self.scenes
 
     def print_info(self):
+        """Print the movie information:
+            - Movie title
+            - Sub-wikia
+            - All of the characters' names
+        """
+
         print "Title of the movie:"
         print "    - " + self.title
-        print "Subwikia:"
+        print "Sub-wikia:"
         print "    - " + self.sub_wikia
 
         self.print_characters()
 
-        return True
-
     def print_characters(self):
+        """List the movie characters' names:
+            - Movie script names
+            - Real names
+        """
+
         print "Characters of the movie:"
 
         for character in self.characters:
             print "    - " + character.name + " ; " + character.real_name
-
-        return True
 
 class MovieCharacter:
     def __init__(self, name, real_name = '', gender = ''):
