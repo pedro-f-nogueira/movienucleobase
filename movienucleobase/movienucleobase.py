@@ -50,7 +50,7 @@ if __name__ == '__main__':
     characters = imsdb.dataextraction.extract_characters(imsdb_movie_script)
     movie.set_characters(characters)
 
-    # Retrieve each character's name
+    # Retrieve each character's real name
     for character in movie.get_characters():
         real_name = imsdb.dataadjustment.retrieve_character_real_name(
             movie.get_sub_wikia(),
@@ -58,14 +58,13 @@ if __name__ == '__main__':
 
         character.set_real_name(real_name)
 
-
     # Return the list of the scenes in the movie
     scenes = imsdb.dataextraction.extract_scenes(imsdb_movie_script)
     movie.set_scenes(scenes)
 
     # Draw the interactions
     for i, movieScene in enumerate(movieScenesList):
-        logger.debug('\nNew scene...')
+        logger.debug('\nNew scene: ' + i)
         logger.debug(re.sub('\s{2,}', '\n', movieScene))
         logger.debug(processMovieSingleScene(movieScene, movieCharactersList, i))
 

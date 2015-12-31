@@ -127,7 +127,7 @@ class MovieData:
 
 
 class MovieCharacter:
-    def __init__(self, name, real_name = '', gender = ''):
+    def __init__(self, name, gender = ''):
         self.name = name
         self.real_name = real_name
         self.gender = gender
@@ -143,6 +143,9 @@ class MovieCharacter:
         self.real_name = real_name
 
         return True
+
+    def set_gender(self, gender):
+        self.gender = gender
 
     def get_real_name(self, real_name):
         return self.real_name
