@@ -34,71 +34,57 @@ class MovieData:
             None
         """
 
-        self.title = title
-        self.sub_wikia = sub_wikia
+        self._title = title
+        self._sub_wikia = sub_wikia
 
-    def set_characters(self, characters):
-        """Set the characters.
-        
-        Args:
-            characters (list of MovieCharacter): List of characters extracted
-            from the movie script
+    @property
+    def title(self):
+        return self._title 
 
-        Returns:
-            Bool: Always returns True.
-        """
+    @property
+    def sub_wikia(self):
+        return self._sub_wikia
 
-        self.characters = characters
-        return True
-
-    def set_scenes(self, scenes):
-        """Set the movie scenes.
-        
-        Args:
-            scenes (list of str): List of all scenes from the movie
-
-        Returns:
-            Bool: Always returns True.
-        """
-
-        self.scenes = scenes
-        return True
-
-    def get_title(self):
-        """Return the movie title as a string.
-        
-        Returns:
-            String: Movie title
-        """
-
-        return self.title
-
-    def get_sub_wikia(self):
-        """Return the movie sub-wikia
-        
-        Returns:
-            String: Movie sub-wikia
-        """
-
-        return self.sub_wikia
-
-    def get_characters(self):
+    @property
+    def characters(self):
         """Return the movie characters
         
         Returns:
             List of MovieCharacter: Movie characters
         """
 
-        return self.characters
+        return self._characters
 
-    def get_scenes(self):
+    @characters.setter
+    def characters(self, x):
+        """Set the characters.
+        
+        Args:
+             x (list of MovieCharacter): List of characters extracted
+            from the movie script
+        """
+
+        self._characters = x
+
+    @property
+    def scenes(self):
         """Return the movie scenes
         
         Returns:
             List of string: Movie scenes
         """
 
-        return self.scenes
+        return self._scenes
+
+    @scenes.setter
+    def scenes(self, x):
+        """Set the movie scenes.
+        
+        Args:
+            x (list of str): List of all scenes from the movie
+        """
+
+        self._scenes = x
 
     def print_info(self):
         """Print the movie information:
@@ -127,10 +113,8 @@ class MovieData:
 
 
 class MovieCharacter:
-    def __init__(self, name, gender = ''):
+    def __init__(self, name):
         self.name = name
-        self.real_name = real_name
-        self.gender = gender
         self.charactersInteractedWith = [[]]
         self.mentionedCharacters = [[]]
         self.appearedScenes = []
@@ -139,19 +123,25 @@ class MovieCharacter:
         self.mentionedCharacters = filter(None, self.mentionedCharacters)
         self.appearedScenes = filter(None, self.appearedScenes)
 
-    def set_real_name(self, real_name):
-        self.real_name = real_name
+    @property
+    def name(self):
+        return self._name
 
-        return True
+    @property
+    def real_name(self):
+        return self._real_name
 
-    def set_gender(self, gender):
-        self.gender = gender
+    @real_name.setter
+    def real_name(self, x):
+        self._real_name = x
 
-    def get_real_name(self, real_name):
-        return self.real_name
+    @property
+    def gender(self):
+        return self._gender
 
-    def get_name(self, name):
-        return self.name
+    @gender.setter
+    def gender(self, x):
+        self._gender = x
 
     def addCharactersInteractedWith(self, nameList):
         addedCharacter = []
