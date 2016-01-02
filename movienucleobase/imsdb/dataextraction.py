@@ -46,8 +46,23 @@ def extract_characters(imsdb_movie_script):
     movie_characters_names_extracted = []
     movie_characters_list = []
 
-    # Regex used to extract the movie characters
-    regex = ur'<b>(?!EXT)(?!SUPER)(?P<movie_char>.*?)<\/b>(?P<movie_text>.*?)(?=<b>)'
+    # *** Regex explanation ***
+    # (1) First and second lines
+    #   Match all text enclosed by the HTML tags:
+    #       - "<b></b>"
+    #   Except for the ones that start with the strings:
+    #       - "EXT."
+    #       - "INT."
+    #       - "SUPER"
+    #   And put them under the capturing group "movie_char"
+    #
+    # (2) Third line
+    #   Match all text that comes after the previous HTML tags until
+    #   the next "<b>" tag (which represents the next character) and
+    #   put it under the captuing group "movie_text"
+    regex = ur'<b>(?!EXT\.)(?!INT\.)(?!SUPER)' + \
+            ur'(?P<movie_char>.*?)<\/b>' + \
+            ur'(?P<movie_text>.*?)(?=<b>)'
 
     for m in re.finditer(regex , imsdb_movie_script):
         movie_characters_names_extracted.append(m.group('movie_char'))
@@ -107,7 +122,27 @@ def extract_scenes(imsdb_movie_script):
     
     logger.info('Extracting all the scenes from the movie script...')
 
-    regex = ur'(<pre>BLACK SCREEN|<b>EXT\.|<b>INT\.)(?P<movie_text>.*?)(?=<b>(EXT\.|INT\.))'
+    # *** Regex explanation ***
+    # (1) First line
+    #   Start by matching the beginning of each scene. Every scene
+    #   starts with one of these strings:
+    #     - "<pre>BLACK SCREEN"
+    #     - "<b>EXT."
+    #     - "<b>INT."
+    #   The "BLACK SCREEN" string is usually the very beginning
+    #   of the movie script.
+    #
+    # (2) Second line
+    #   Match all text starting from one of the previous strings
+    #   and tag it under the capturing group "movie_text"
+    #
+    # (3) Third line
+    #   Stop matching until the beginning of the next scene, which
+    #   is given by the strings mentioned earlier.
+    regex = ur'(<pre>BLACK SCREEN|<b>EXT\.|<b>INT\.)' + \
+            ur'(?P<movie_text>.*?)' + \
+            ur'(?=<b>(EXT\.|INT\.))'
+
     movie_scenes_list = []
 
     for m in re.finditer(regex, imsdb_movie_script):
