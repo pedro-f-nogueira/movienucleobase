@@ -246,3 +246,79 @@ def similar_character_already_added(movie_characters_list, movie_character_name)
         return False
 
 
+def process_movie_single_scene(single_scene, movieCharactersList, scene_number):
+
+    # *** Regex explanation ***
+    # (1) First and second lines
+    #   Match all text enclosed by the HTML tags:
+    #       - "<b></b>"
+    #   Except for the ones that start with the strings:
+    #       - "EXT."
+    #       - "INT."
+    #       - "SUPER"
+    #   And put them under the capturing group "movie_char"
+    #
+    # (2) Third line
+    #   Match all text that comes after the previous HTML tags until
+    #   the next "<b>" tag (which represents the next character) and
+    #   put it under the captuing group "movie_text"
+    regex = ur'<b>(?!EXT\.)(?!INT\.)(?!SUPER)' + \
+            ur'(?P<movie_char>.*?)<\/b>' + \
+            ur'(?P<movie_text>.*?)(?=<b>)'
+
+    p = re.compile(regex, re.MULTILINE | re.DOTALL)
+     
+    # The elements of the list movie_line are extracted in the
+    # following manner:
+    #   [0] - Character name
+    #   [1] - Character line
+    #   [2] - Character name
+    #   [3] - Character line
+    #       ...
+    movie_line = re.findall(p, single_scene)
+
+    #print "*** movie line ***"
+    #print movie_line
+    #print "** end ***"
+
+    n = 0
+    movieCharacterFromScene = ""
+    charactersInteractedWith = []
+
+    for l1_tmp in movie_line:
+        print "New l1_tmp"
+        print l1_tmp
+
+        for l1 in l1_tmp:
+            if n%2==0:
+                # Consider valid characters the names that are centered
+                nWhitespacesinStartOfString = len(l1) - len(l1.lstrip(' '))
+
+                if nWhitespacesinStartOfString<20 or nWhitespacesinStartOfString>30:
+                    n = n + 1
+                    continue
+
+                movieCharacterFromScene = l1.split("(")[0]
+                movieCharacterFromScene = " ".join(movieCharacterFromScene.split())
+
+                if movieCharacterFromScene not in charactersInteractedWith and movieCharacterFromScene != "":
+                    charactersInteractedWith.append(movieCharacterFromScene)
+            else:
+                for l2 in movieCharactersList:
+                    if l2.name.lower() in l1.lower():
+                        #print movieCharacterFromScene + " is mentioning " + l2.name
+
+                        for l3 in movieCharactersList:
+                            if l3.name==movieCharacterFromScene:
+                                l3.add_mentioned_character(l2.name)
+                                break
+
+            n = n + 1
+
+    for l1 in movieCharactersList:
+        for l2 in charactersInteractedWith:
+            if l1.name==l2:
+                l1.add_characters_interacted_with(charactersInteractedWith)
+                l1.add_appeared_scene(scene_number)
+
+    return charactersInteractedWith

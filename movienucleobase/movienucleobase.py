@@ -1,4 +1,5 @@
 import argparse
+import re
 
 import logging
 import logging.config
@@ -7,8 +8,6 @@ import imsdb.filehandlers
 import imsdb.dataextraction
 import imsdb.dataadjustment
 import imsdb.datastructures
-
-from processMovieSingleScene import *
 
 if __name__ == '__main__':
     # Process arguments from the command line
@@ -58,6 +57,15 @@ if __name__ == '__main__':
             movie.sub_wikia,
             character.name)
 
+    # Clean up list
+    real_name_list = []
+
+    for character in movie.characters:
+        if character.real_name not in real_name_list:
+            real_name_list.append(character.real_name)
+        else:
+            movie.characters.remove(character)
+
     # Return the list of the scenes in the movie
     movie.scenes = imsdb.dataextraction.extract_scenes(imsdb_movie_script)
 
@@ -65,10 +73,12 @@ if __name__ == '__main__':
     for i, scene in enumerate(movie.scenes):
         logger.debug('\nNew scene: ' + str(i))
         logger.debug(re.sub('\s{2,}', '\n', scene))
-        logger.debug(processMovieSingleScene(scene, movie.characters, i))
+        logger.debug(imsdb.dataextraction.process_movie_single_scene(scene, movie.characters, i))
 
         if nscenes>0 and i==nscenes:
             break
+
+    quit()
 
     # List all info
     movie.print_info()

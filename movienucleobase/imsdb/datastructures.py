@@ -110,7 +110,10 @@ class MovieData:
         print 'Characters of the movie:'
 
         for character in self.characters:
-            print '    - ' + character.name + ' ; ' + character.real_name
+            print '    - Name: ' + character.name + \
+                  ' ; Real name: ' + character.real_name + \
+                  ''
+        #          ' ; Gender: ' + character.gender
 
 
 class MovieCharacter:
