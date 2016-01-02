@@ -43,6 +43,7 @@ def open_movie_script(filename):
             if html_code not in imsdb_movie_script:
                 print "Error: Unable to split file by the following string:" + \
                         html_code
+                        return
 
             imsdb_movie_script = imsdb_movie_script.split(html_code)[1]
 
