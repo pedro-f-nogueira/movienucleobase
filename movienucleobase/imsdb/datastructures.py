@@ -117,11 +117,10 @@ class MovieCharacter:
     def __init__(self, name):
         self._name = name
         self._characters_interacted_with = {}
-        self.mentionedCharacters = [[]]
-        self.appearedScenes = []
+        self._appeared_scenes = []
 
+        self.mentionedCharacters = [[]]
         self.mentionedCharacters = filter(None, self.mentionedCharacters)
-        self.appearedScenes = filter(None, self.appearedScenes)
 
     @property
     def name(self):
@@ -134,6 +133,10 @@ class MovieCharacter:
     @property
     def gender(self):
         return self._gender
+
+    @property
+    def appeared_scenes(self):
+        return self._appeared_scenes
 
     @property
     def characters_interacted_with(self):
@@ -177,9 +180,20 @@ class MovieCharacter:
         for l in set(list_of_names).difference(self._characters_interacted_with):
             self._characters_interacted_with[l] = 1
 
-        logging.debug("The character " + self.name + " interacted with: " + ", ".join(addedCharacter))
+        logger.debug("The character " + self.name + " interacted with: " + ", ".join(addedCharacter))
 
         return True
+
+    def add_appeared_scene(self, scene_number):
+        logger = logging.getLogger(__name__)
+
+        logger.debug("The character " + self.name + 
+                     " appears in the scene " + str(scene_number))
+
+        try:
+            self._appeared_scenes.append(scene_number)
+        except NameError:
+            self._appeared_scenes = [scene_number]
 
     def addMentionedCharacter(self, name):
         listElementFound = 0
@@ -194,10 +208,6 @@ class MovieCharacter:
             self.mentionedCharacters.append([name, 1])
 
         logging.debug("The character " + self.name + " mentioned " + name)
-
-    def addAppearedScene(self, nScene):
-        logging.debug("The character " + self.name + " appears in the scene " + str(nScene))
-        self.appearedScenes.append(nScene)
 
     def list_characters_interacted_with(self):
         if len(self._characters_interacted_with)>0:
@@ -217,9 +227,9 @@ class MovieCharacter:
         else:
             print "The character did not mentioned anyone."
 
-    def listAppearedScenes(self):
-        if self.appearedScenes:
-            print "The character " + self.name + " appeared in the following scenes: " + ", ".join(str(i) for i in self.appearedScenes)
+    def list_appeared_scenes(self):
+        if self.appeared_scenes:
+            print "The character " + self.name + " appeared in the following scenes: " + ", ".join(str(i) for i in self.appeared_scenes)
         else:
             print "The character did not appear in any scenes."
 
