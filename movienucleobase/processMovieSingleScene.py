@@ -1,7 +1,7 @@
 import re
 import logging
 
-from classMovieCharacter import *
+import imsdb.datastructures
 
 def processMovieSingleScene(movieScene, movieCharactersList, nScene):
     p = re.compile(ur'<b>(?!EXT)(?!SUPER)(?P<movie_char>.*?)<\/b>(?P<movie_text>.*?)(?=<b>)', re.MULTILINE | re.DOTALL)
