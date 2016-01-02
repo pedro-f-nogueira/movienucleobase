@@ -40,7 +40,7 @@ def processMovieSingleScene(movieScene, movieCharactersList, nScene):
 
                         for l3 in movieCharactersList:
                             if l3.name==movieCharacterFromScene:
-                                l3.addMentionedCharacter(l2.name)
+                                l3.add_mentioned_character(l2.name)
                                 break
 
             n = n + 1

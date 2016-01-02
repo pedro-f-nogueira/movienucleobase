@@ -72,5 +72,5 @@ if __name__ == '__main__':
     print ''
     for character in movie.characters:
         character.list_characters_interacted_with()
-        character.listMentionedCharacters()
+        character.list_mentioned_characters()
         character.list_appeared_scenes()

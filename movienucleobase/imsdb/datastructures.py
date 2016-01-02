@@ -94,10 +94,10 @@ class MovieData:
             - All of the characters' names
         """
 
-        print "Title of the movie:"
-        print "    - " + self.title
-        print "Sub-wikia:"
-        print "    - " + self.sub_wikia
+        print 'Title of the movie:'
+        print '    - ' + self.title
+        print 'Sub-wikia:'
+        print '    - ' + self.sub_wikia
 
         self.print_characters()
 
@@ -107,20 +107,18 @@ class MovieData:
             - Real names
         """
 
-        print "Characters of the movie:"
+        print 'Characters of the movie:'
 
         for character in self.characters:
-            print "    - " + character.name + " ; " + character.real_name
+            print '    - ' + character.name + ' ; ' + character.real_name
 
 
 class MovieCharacter:
     def __init__(self, name):
         self._name = name
         self._characters_interacted_with = {}
+        self._mentioned_characters = {}
         self._appeared_scenes = []
-
-        self.mentionedCharacters = [[]]
-        self.mentionedCharacters = filter(None, self.mentionedCharacters)
 
     @property
     def name(self):
@@ -141,6 +139,10 @@ class MovieCharacter:
     @property
     def characters_interacted_with(self):
         return self._characters_interacted_with
+
+    @property
+    def mentioned_characters(self):
+        return self._mentioned_characters
 
     @real_name.setter
     def real_name(self, x):
@@ -180,57 +182,57 @@ class MovieCharacter:
         for l in set(list_of_names).difference(self._characters_interacted_with):
             self._characters_interacted_with[l] = 1
 
-        logger.debug("The character " + self.name + " interacted with: " + ", ".join(addedCharacter))
+        logger.debug('The character ' + self.name + ' interacted with: ' + ', '.join(addedCharacter))
 
         return True
 
     def add_appeared_scene(self, scene_number):
         logger = logging.getLogger(__name__)
 
-        logger.debug("The character " + self.name + 
-                     " appears in the scene " + str(scene_number))
+        logger.debug('The character ' + self.name + 
+                     ' appears in the scene ' + str(scene_number))
 
         try:
             self._appeared_scenes.append(scene_number)
         except NameError:
             self._appeared_scenes = [scene_number]
 
-    def addMentionedCharacter(self, name):
-        listElementFound = 0
+    def add_mentioned_character(self, name):
+        logger = logging.getLogger(__name__)
 
-        for l in self.mentionedCharacters:
-            if l[0]==name:
-                l[1] = l[1] + 1
-                listElementFound = 1
-                break
+        if name in self.mentioned_characters:
+            self._mentioned_characters[name] = \
+                self._mentioned_characters[name] + 1
+        else:
+            self._mentioned_characters[name] = 1
 
-        if listElementFound==0:
-            self.mentionedCharacters.append([name, 1])
-
-        logging.debug("The character " + self.name + " mentioned " + name)
+        logger.debug('The character ' + self.name + ' mentioned ' + name)
 
     def list_characters_interacted_with(self):
         if len(self._characters_interacted_with)>0:
-            print "The character " + self.name + " interacted with:"
+            print 'The character ' + self.name + ' interacted with:'
 
-            for l in self._characters_interacted_with:
-                print "    - " + l + " " + str(self._characters_interacted_with[l]) + " times"
+            for char in self._characters_interacted_with:
+                print '    - ' + char + ' ' + \
+                    str(self.characters_interacted_with[char]) + ' times'
         else:
-            print "The character " + self.name + " did not have any interactions."
+            print 'The character ' + self.name + ' did\'t have any interactions'
 
-    def listMentionedCharacters(self):
-        if len(self.mentionedCharacters):
-            print "The character " + self.name + " mentioned the following characters:"
+    def list_mentioned_characters(self):
+        if len(self.mentioned_characters):
+            print 'The character ' + self.name + ' mentioned the following characters:'
 
-            for l in self.mentionedCharacters:
-                print "    - " + l[0] + " " + str(l[1]) + " times"
+            for char in self.mentioned_characters:
+                print '    - ' + char + ' ' + \
+                    str(self.mentioned_characters[char]) + ' times'
         else:
-            print "The character did not mentioned anyone."
+            print 'The character did not mentioned anyone.'
 
     def list_appeared_scenes(self):
         if self.appeared_scenes:
-            print "The character " + self.name + " appeared in the following scenes: " + ", ".join(str(i) for i in self.appeared_scenes)
+            print 'The character ' + self.name + ' appeared in the following scenes: ' + \
+                ', '.join(str(i) for i in self.appeared_scenes)
         else:
-            print "The character did not appear in any scenes."
+            print 'The character did not appear in any scenes.'
 
 
