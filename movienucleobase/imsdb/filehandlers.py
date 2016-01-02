@@ -38,7 +38,12 @@ def open_movie_script(filename):
             # for the movie info extraction
             # TODO: This HTML line is hardcoded in the code, it could be
             # somehow parameterized
-            html_code = '<br> <table width='
+            html_code = '<br> <table width=\"100%\">'
+
+            if html_code not in imsdb_movie_script:
+                print "Error: Unable to split file by the following string:" + \
+                        html_code
+
             imsdb_movie_script = imsdb_movie_script.split(html_code)[1]
 
             logger.info('File successfully opened: ' + filename)
