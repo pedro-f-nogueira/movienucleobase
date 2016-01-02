@@ -45,6 +45,10 @@ if __name__ == '__main__':
     # The script terminates if the script is empty
     imsdb_movie_script = imsdb.filehandlers.open_movie_script(args.filename)
 
+    if not imsdb_movie_script:
+        print "Error: Empty movie script."
+        quit()
+
     # Extract the movie characters
     movie.characters = imsdb.dataextraction.extract_characters(imsdb_movie_script)
 
