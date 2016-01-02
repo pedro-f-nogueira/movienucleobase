@@ -165,16 +165,13 @@ class MovieCharacter:
         # Detect which characters were already added as interactions and
         # increase the respective counters of interactions
         for l in set(list_of_names).intersection(self.charactersInteractedWith):
-            for character_already_added in self.charactersInteractedWith:
-                if l==character_already_added[0] and l!=self.name or \
-                    len(l)==1 and l==self.name:
-
-                    character_already_added[1]++
-                    break
+            if l in self.charactersInteractedWith and l!=self.name or \
+               len(l)==1 and l==self.name:
+                self.charactersInteractedWith[l] = self.charactersInteractedWith[l] + 1
 
         # Detect the characters that weren't added as interaction yet
-        for l in set(list_of_names).difference(self.charactersInteractedWith[0]):
-            self.charactersInteractedWith.append([l, 1])
+        for l in set(list_of_names).difference(self.charactersInteractedWith):
+            self.charactersInteractedWith[l] = 1
 
         logging.debug("The character " + self.name + " interacted with: " + ", ".join(addedCharacter))
 
