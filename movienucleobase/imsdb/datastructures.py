@@ -116,7 +116,7 @@ class MovieData:
 class MovieCharacter:
     def __init__(self, name):
         self._name = name
-        self.charactersInteractedWith = {}
+        self._characters_interacted_with = {}
         self.mentionedCharacters = [[]]
         self.appearedScenes = []
 
@@ -134,6 +134,10 @@ class MovieCharacter:
     @property
     def gender(self):
         return self._gender
+
+    @property
+    def characters_interacted_with(self):
+        return self._characters_interacted_with
 
     @real_name.setter
     def real_name(self, x):
@@ -164,14 +168,14 @@ class MovieCharacter:
 
         # Detect which characters were already added as interactions and
         # increase the respective counters of interactions
-        for l in set(list_of_names).intersection(self.charactersInteractedWith):
-            if l in self.charactersInteractedWith and l!=self.name or \
+        for l in set(list_of_names).intersection(self._characters_interacted_with):
+            if l in self._characters_interacted_with and l!=self.name or \
                len(l)==1 and l==self.name:
-                self.charactersInteractedWith[l] = self.charactersInteractedWith[l] + 1
+                self._characters_interacted_with[l] = self._characters_interacted_with[l] + 1
 
         # Detect the characters that weren't added as interaction yet
-        for l in set(list_of_names).difference(self.charactersInteractedWith):
-            self.charactersInteractedWith[l] = 1
+        for l in set(list_of_names).difference(self._characters_interacted_with):
+            self._characters_interacted_with[l] = 1
 
         logging.debug("The character " + self.name + " interacted with: " + ", ".join(addedCharacter))
 
@@ -195,12 +199,12 @@ class MovieCharacter:
         logging.debug("The character " + self.name + " appears in the scene " + str(nScene))
         self.appearedScenes.append(nScene)
 
-    def listCharactersInteractedWith(self):
-        if len(self.charactersInteractedWith)>0:
+    def list_characters_interacted_with(self):
+        if len(self._characters_interacted_with)>0:
             print "The character " + self.name + " interacted with:"
 
-            for l in self.charactersInteractedWith:
-                print "    - " + l[0] + " " + str(l[1]) + " times"
+            for l in self._characters_interacted_with:
+                print "    - " + l + " " + str(self._characters_interacted_with[l]) + " times"
         else:
             print "The character " + self.name + " did not have any interactions."
 
