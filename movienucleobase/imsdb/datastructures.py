@@ -7,6 +7,7 @@
 """
 
 import logging
+import itertools
 
 
 class MovieData:
@@ -114,12 +115,11 @@ class MovieData:
 
 class MovieCharacter:
     def __init__(self, name):
-        self.name = name
-        self.charactersInteractedWith = [[]]
+        self._name = name
+        self.charactersInteractedWith = {}
         self.mentionedCharacters = [[]]
         self.appearedScenes = []
 
-        self.charactersInteractedWith = filter(None, self.charactersInteractedWith)
         self.mentionedCharacters = filter(None, self.mentionedCharacters)
         self.appearedScenes = filter(None, self.appearedScenes)
 
@@ -131,43 +131,54 @@ class MovieCharacter:
     def real_name(self):
         return self._real_name
 
-    @real_name.setter
-    def real_name(self, x):
-        self._real_name = x
-
     @property
     def gender(self):
         return self._gender
+
+    @real_name.setter
+    def real_name(self, x):
+        self._real_name = x
 
     @gender.setter
     def gender(self, x):
         self._gender = x
 
-    def addCharactersInteractedWith(self, nameList):
+    def add_characters_interacted_with(self, list_of_names):
+        # The function will accept a list of characters the the present
+        # character interacted during a scene.
+        #
+        # It is desirable to add all of these characters to the list but
+        # the list will also contain the present character as well. So we
+        # need to make sure to exclude it from the list.
+        #
+        # But it is also possible that the character speaks with himself
+        # in the whole scene. This scenario also counts as well, so we
+        # only add the character if it is the only element in the list.
+        logger = logging.getLogger(__name__)
+
         addedCharacter = []
-        nameListLength = len(nameList)
 
-        if nameListLength==0:
-            print "[Error][addCharactersInteractedWith()] Invalid nameList"
-        else:
-            for l1 in nameList:
-                listElementFound = 0
+        # If the lists of names is empy, terminate the function immediately
+        if len(list_of_names)==0:
+            return False
 
-                for l2 in self.charactersInteractedWith:
-                    if l1!=self.name or l1==self.name and nameListLength==1:
-                        if l2[0] in l1:
-                            addedCharacter.append(l2[0])
-                            l2[1] = l2[1] + 1
-                            listElementFound = 1
-                            break
-                    else:
-                        listElementFound = 1
+        # Detect which characters were already added as interactions and
+        # increase the respective counters of interactions
+        for l in set(list_of_names).intersection(self.charactersInteractedWith):
+            for character_already_added in self.charactersInteractedWith:
+                if l==character_already_added[0] and l!=self.name or \
+                    len(l)==1 and l==self.name:
 
-                if listElementFound==0:
-                    addedCharacter.append(l1)
-                    self.charactersInteractedWith.append([l1, 1])
+                    character_already_added[1]++
+                    break
 
-            logging.debug("The character " + self.name + " interacted with: " + ", ".join(addedCharacter))
+        # Detect the characters that weren't added as interaction yet
+        for l in set(list_of_names).difference(self.charactersInteractedWith[0]):
+            self.charactersInteractedWith.append([l, 1])
+
+        logging.debug("The character " + self.name + " interacted with: " + ", ".join(addedCharacter))
+
+        return True
 
     def addMentionedCharacter(self, name):
         listElementFound = 0

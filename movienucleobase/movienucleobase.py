@@ -9,7 +9,6 @@ import imsdb.dataadjustment
 import imsdb.datastructures
 
 from processMovieSingleScene import *
-from plotCharacterTimeline import *
 
 if __name__ == '__main__':
     # Process arguments from the command line

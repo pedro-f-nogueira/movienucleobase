@@ -48,7 +48,7 @@ def processMovieSingleScene(movieScene, movieCharactersList, nScene):
     for l1 in movieCharactersList:
         for l2 in charactersInteractedWith:
             if l1.name==l2:
-                l1.addCharactersInteractedWith(charactersInteractedWith)
+                l1.add_characters_interacted_with(charactersInteractedWith)
                 l1.addAppearedScene(nScene)
 
     return charactersInteractedWith
