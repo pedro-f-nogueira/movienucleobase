@@ -268,52 +268,46 @@ def process_movie_single_scene(single_scene, movieCharactersList, scene_number):
 
     p = re.compile(regex, re.MULTILINE | re.DOTALL)
      
-    # The elements of the list movie_line are extracted in the
+    # The elements of the list movie_lines are extracted in the
     # following manner:
-    #   [0] - Character name
-    #   [1] - Character line
-    #   [2] - Character name
-    #   [3] - Character line
+    #   [Line 0] - [Character name, Character line]
+    #   [Line 1] - [Character name, Character line]
+    #   [Line 2] - [Character name, Character line]
     #       ...
-    movie_line = re.findall(p, single_scene)
+    movie_lines = re.findall(p, single_scene)
 
-    #print "*** movie line ***"
-    #print movie_line
-    #print "** end ***"
-
-    n = 0
     movieCharacterFromScene = ""
     charactersInteractedWith = []
 
-    for l1_tmp in movie_line:
-        print "New l1_tmp"
-        print l1_tmp
+    for line in movie_lines:
+        # First step:
+        #   - Detect new direct interactions
 
-        for l1 in l1_tmp:
-            if n%2==0:
-                # Consider valid characters the names that are centered
-                nWhitespacesinStartOfString = len(l1) - len(l1.lstrip(' '))
+        movie_char_from_scene = line[0]
 
-                if nWhitespacesinStartOfString<20 or nWhitespacesinStartOfString>30:
-                    n = n + 1
-                    continue
+        # If the character was not a valid one (meaning that there is
+        # some kind of meta information in the scene like, a description on
+        # how the camera behave or similar), discard the current movie line
+        # and move on to the next one
 
-                movieCharacterFromScene = l1.split("(")[0]
-                movieCharacterFromScene = " ".join(movieCharacterFromScene.split())
+        if not valid_movie_character(movie_char_from_scene):
+            continue
 
-                if movieCharacterFromScene not in charactersInteractedWith and movieCharacterFromScene != "":
-                    charactersInteractedWith.append(movieCharacterFromScene)
-            else:
-                for l2 in movieCharactersList:
-                    if l2.name.lower() in l1.lower():
-                        #print movieCharacterFromScene + " is mentioning " + l2.name
+        movie_char_from_scene = strip_unwanted_strings(movie_char_from_scene)
 
-                        for l3 in movieCharactersList:
-                            if l3.name==movieCharacterFromScene:
-                                l3.add_mentioned_character(l2.name)
-                                break
+        if movie_char_from_scene not in charactersInteractedWith: 
+            charactersInteractedWith.append(movie_char_from_scene)
 
-            n = n + 1
+        # Second step:
+        #   - Check for any mentioned characters
+        #       For example: Frodo might talk about Gandalf even though
+        #       Gandalf might not be in the scene
+
+        movie_line_from_scene = line[1]
+
+        check_mentioned_characters(movie_char_from_scene,
+                                   movie_line_from_scene,
+                                   movieCharactersList)
 
     for l1 in movieCharactersList:
         for l2 in charactersInteractedWith:
@@ -322,3 +316,14 @@ def process_movie_single_scene(single_scene, movieCharactersList, scene_number):
                 l1.add_appeared_scene(scene_number)
 
     return charactersInteractedWith
+
+def check_mentioned_characters(char_from_scene, movie_line, characters_list):
+    for mentioned_character in characters_list:
+        # Find which characters are mentioned in the movie line
+        if mentioned_character.name.lower() in movie_line.lower():
+            # Add the mentioned characters to the list of the character that
+            # it is mentioning them
+            for mentioning_character in characters_list:
+                if char_from_scene == mentioning_character.name:
+                    mentioning_character.add_mentioned_character(mentioned_character.name)
+                    break

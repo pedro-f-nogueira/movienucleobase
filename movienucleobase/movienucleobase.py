@@ -39,7 +39,7 @@ if __name__ == '__main__':
     else:
         nscenes = 0
 
-    # Sets up the logging system
+    # Setup the logging system
     logconfig = 'logging_config.ini'
     logfile = 'movienucleobase.log'
     logging.config.fileConfig(logconfig, defaults={'logfilename': logfile})
@@ -81,10 +81,6 @@ if __name__ == '__main__':
             dict_gender = imsdb.filehandlers.load_config_file(args.config, 'gender')
             character.gender = dict_gender[character.name.lower()]
 
-    movie.print_characters()
-
-    quit()
-
     # Return the list of the scenes in the movie
     movie.scenes = imsdb.dataextraction.extract_scenes(imsdb_movie_script)
 
@@ -96,8 +92,6 @@ if __name__ == '__main__':
 
         if nscenes>0 and i==nscenes:
             break
-
-    quit()
 
     # List all info
     movie.print_info()
