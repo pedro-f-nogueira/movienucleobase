@@ -97,12 +97,19 @@ def retrieve_character_gender(real_name, api_key_path = 'api_key'):
         return nogender
 
     # Second step: look up for the character's gender
-    freebase_topic_url = freebase_topic_url + character_id + "/"
-    freebase_search_params = {'key': freebase_api_key}
+    freebase_topic_url = freebase_topic_url + character_id
+    freebase_search_params = {
+        'key': freebase_api_key,
+        'filter': freebase_json_gender
+        }
     url = freebase_topic_url + '?' + urllib.urlencode(freebase_search_params)
     logger.debug('Looking up ' + real_name + '\'s gender: ' + url)
 
     response = json.loads(urllib.urlopen(freebase_topic_url).read())
+
+    if 'property' not in response:
+        print 'Error retrieving data from freebase: ' + url
+        print response
 
     if freebase_json_gender in response['property'].keys():
         gender = response['property'][freebase_json_gender]['values'][0]['text']

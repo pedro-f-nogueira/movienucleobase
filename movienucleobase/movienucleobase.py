@@ -16,6 +16,9 @@ if __name__ == '__main__':
     parser.add_argument('filename',
                         help='Name of the file containing the movie script')
 
+    parser.add_argument('--config',
+                        help='Name of the configuration file')
+
     parser.add_argument('--nscenes',
                         help='Number of scenes to process')
 
@@ -24,6 +27,10 @@ if __name__ == '__main__':
 
     parser.add_argument('--sub_wikia',
                         help='The subwikia associated to the movie')
+
+    parser.add_argument('--bypass_gender_retrieval',
+                        help='Bypass the retrieval of gender from freebase',
+                        action='store_true')
 
     args = parser.parse_args()
 
@@ -65,6 +72,18 @@ if __name__ == '__main__':
             real_name_list.append(character.real_name)
         else:
             movie.characters.remove(character)
+
+    # Identify the gender of each character
+    for character in movie.characters:
+        if not args.bypass_gender_retrieval:
+            character.real_name = imsdb.dataadjustment.retrieve_character_gender(character.real_name)
+        else:
+            dict_gender = imsdb.filehandlers.load_config_file(args.config, 'gender')
+            character.gender = dict_gender[character.name.lower()]
+
+    movie.print_characters()
+
+    quit()
 
     # Return the list of the scenes in the movie
     movie.scenes = imsdb.dataextraction.extract_scenes(imsdb_movie_script)

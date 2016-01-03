@@ -112,13 +112,14 @@ class MovieData:
         for character in self.characters:
             print '    - Name: ' + character.name + \
                   ' ; Real name: ' + character.real_name + \
-                  ''
-        #          ' ; Gender: ' + character.gender
+                  ' ; Gender: ' + character.gender
 
 
 class MovieCharacter:
     def __init__(self, name):
         self._name = name
+        self._real_name = ""
+        self._gender = ""
         self._characters_interacted_with = {}
         self._mentioned_characters = {}
         self._appeared_scenes = []

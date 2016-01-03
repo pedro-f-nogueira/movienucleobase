@@ -7,6 +7,7 @@
 """
 
 import logging
+import ConfigParser
 
 
 def open_movie_script(filename):
@@ -52,5 +53,53 @@ def open_movie_script(filename):
             return imsdb_movie_script
     except:
         raise
+
+def load_config_file(filename, section):
+    """Receives the name of a configuration file to tweak the script's behavior.
+    
+    At the moment, the only configuration used is for loading the character's
+    gender instead of querying freebase's API, since the API access is fairy
+    limited.
+
+    The config file format is a standard configuration file used by Python's
+    libraries:
+        [section_1]
+        conf_1_1 = value_1
+        conf_1_2 = value_2
+
+        [section_2]
+        conf_2_1 = value_3
+        ...
+
+    Args:
+        filename (string): The name of the configuration file
+        section (string): The name of the intended section
+
+    Returns:
+        dictionary: Contains the contents of the HTML minus the header.
+
+    Raises:
+        It raises an exception if the desired option is not found.
+    """
+
+    logger = logging.getLogger(__name__)
+
+    Config = ConfigParser.ConfigParser()
+
+    Config.read(filename)
+
+    dict = {}
+
+    for option in Config.options(section):
+        try:
+            dict[option] = Config.get(section, option)
+
+            if dict[option] == -1:
+                logger.info('Option not found: %s' % option)
+        except:
+            logger.info('Raising exception in option: %s' % option)
+            dict[option] = None
+
+    return dict
 
 
