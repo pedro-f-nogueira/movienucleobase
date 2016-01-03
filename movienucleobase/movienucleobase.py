@@ -97,7 +97,24 @@ if __name__ == '__main__':
     movie.print_info()
         
     print ''
+	
     for character in movie.characters:
         character.list_characters_interacted_with()
         character.list_mentioned_characters()
         character.list_appeared_scenes()
+
+	# Builds Excel with 5 columns
+    # 1 - Id
+    # 2 - Character name
+    # 3 - Character gender
+    # 4 - Number of scenes in which he appeared
+    # 5 - Character he interacted with
+
+    #imsdb.DataFrame.build_1st_excel(movie.characters)
+
+    # Builds Excel with 4 columns relative to interactions
+    # 1 - Id
+    # 2 - Character 1
+    # 3 - Character 2
+    # 4 - Number of Interactions
+    #imsdb.DataFrame.build_2nd_excel(movie.characters)
