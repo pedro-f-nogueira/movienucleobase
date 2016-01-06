@@ -148,6 +148,22 @@ def retrieve_character_gender(real_name, api_key_path = 'api_key'):
 
 
 def get_freebase_character_id(real_name, freebase_api_key, freebase_search_url):
+    """Retrieve the character's ID associated to the Freebase database.
+    
+    This function retrives the character ID to be used by the 
+    function retrieve_character_gender() in order to extract information
+    related to the character.
+
+    More info: https://developers.google.com/freebase/
+
+    Args:
+        real_name (String): The character's name to be queried on Freebase
+        freebase_api_key (String): The Google API's key used to access Freebase
+        freebase_search_url (String): The URL to be used to perform searches
+
+    Returns:
+        String: The character's ID on Freebase
+    """
     logger = logging.getLogger(__name__)
 
     freebase_search_params = {
