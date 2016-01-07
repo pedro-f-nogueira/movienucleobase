@@ -152,6 +152,18 @@ def extract_scenes(imsdb_movie_script):
 
 
 def process_movie_single_scene(single_scene, movieCharactersList, scene_number):
+    """Parse a single movie scene and extract the interactions between the
+    characters.
+
+    Args:
+        single_scene (list of strings): A single movie scene
+        movieCharactersList (list of MovieCharacter): list of all extracted
+        characters
+        scene_number (integer): The number of scene being analyzed.
+
+    Returns:
+        List of strings: The returned list returns the list of interactions
+    """
 
     # *** Regex explanation ***
     # (1) First and second lines
