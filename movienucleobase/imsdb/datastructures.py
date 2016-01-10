@@ -114,6 +114,14 @@ class MovieData:
                   ' ; Real name: ' + character.real_name + \
                   ' ; Gender: ' + character.gender
 
+    def clean_up_character_list(self):
+        real_name_list = []
+
+        for character in self.characters:
+            if character.real_name not in real_name_list:
+                real_name_list.append(character.real_name)
+            else:
+                self.characters.remove(character)
 
 class MovieCharacter:
     def __init__(self, name):

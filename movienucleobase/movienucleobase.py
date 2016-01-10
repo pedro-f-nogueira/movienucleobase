@@ -65,13 +65,7 @@ if __name__ == '__main__':
             character.name)
 
     # Clean up list
-    real_name_list = []
-
-    for character in movie.characters:
-        if character.real_name not in real_name_list:
-            real_name_list.append(character.real_name)
-        else:
-            movie.characters.remove(character)
+    movie.clean_up_character_list()
 
     # Identify the gender of each character
     for character in movie.characters:
