@@ -125,12 +125,17 @@ class MovieData:
 
 class MovieCharacter:
     def __init__(self, name):
+        self._id = id
         self._name = name
         self._real_name = ""
         self._gender = ""
         self._characters_interacted_with = {}
         self._mentioned_characters = {}
         self._appeared_scenes = []
+
+    @property
+    def id(self):
+        return self._id
 
     @property
     def name(self):
@@ -164,8 +169,8 @@ class MovieCharacter:
     def gender(self, x):
         self._gender = x
 
-    def add_characters_interacted_with(self, list_of_names):
-        # The function will accept a list of characters the the present
+    def add_characters_interacted_with(self, list_of_names,char_list):
+        # The function will accept a list of characters that the present
         # character interacted during a scene.
         #
         # It is desirable to add all of these characters to the list but
@@ -179,7 +184,7 @@ class MovieCharacter:
 
         addedCharacter = []
 
-        # If the lists of names is empy, terminate the function immediately
+        # If the lists of names is empty, terminate the function immediately
         if len(list_of_names)==0:
             return False
 
@@ -192,7 +197,8 @@ class MovieCharacter:
 
         # Detect the characters that weren't added as interaction yet
         for l in set(list_of_names).difference(self._characters_interacted_with):
-            self._characters_interacted_with[l] = 1
+            if l in char_list:
+                self._characters_interacted_with[l] = 1
 
         logger.debug('The character ' + self.name + ' interacted with: ' + ', '.join(addedCharacter))
 

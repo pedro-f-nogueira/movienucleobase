@@ -11,7 +11,6 @@ import logging
 import imsdb.datastructures
 import imsdb.utilities
 
-
 def extract_characters(imsdb_movie_script):
     """ Extract the movie characters from a movie script into a list.
 
@@ -93,7 +92,6 @@ def extract_characters(imsdb_movie_script):
 
     return movie_characters_list
 
-
 def extract_scenes(imsdb_movie_script):
     """Parse the movie script and collect all movie scenes in the movie script.
 
@@ -149,7 +147,6 @@ def extract_scenes(imsdb_movie_script):
         movie_scenes_list.append(m.group('movie_text'))
      
     return movie_scenes_list
-
 
 def process_movie_single_scene(single_scene, movieCharactersList, scene_number):
     """Parse a single movie scene and extract the interactions between the
@@ -226,12 +223,48 @@ def process_movie_single_scene(single_scene, movieCharactersList, scene_number):
                                                    movie_line_from_scene,
                                                    movieCharactersList)
 
+    char_list = []
+    for char in movieCharactersList:
+        char_list.append(char.name)
+
     for l1 in movieCharactersList:
         for l2 in charactersInteractedWith:
             if l1.name==l2:
-                l1.add_characters_interacted_with(charactersInteractedWith)
+                l1.add_characters_interacted_with(charactersInteractedWith,char_list)
                 l1.add_appeared_scene(scene_number)
 
     return charactersInteractedWith
 
+def get_real_name_and_id(characters,movie):
+    #Gets the real name of the char from the wikia
+    #Adds an id to that char
+    id = 0
+    for character in characters:
+        character.real_name = imsdb.dataadjustment.retrieve_character_real_name(
+            movie.sub_wikia,
+            character.name)
 
+        character.id = id
+        id = id +1
+
+    # Clean up list
+    real_name_list = []
+
+    for character in characters:
+        if character.real_name not in real_name_list:
+            real_name_list.append(character.real_name)
+        else:
+            movie.characters.remove(character)
+
+def get_gender(characters,args):
+    #Gets the gender for each char and adds it to the object
+    #Gender can be:
+    #male
+    #female
+    #no gender
+    for character in characters:
+        if not args.bypass_gender_retrieval:
+            character.real_name = imsdb.dataadjustment.retrieve_character_gender(character.real_name)
+        else:
+            dict_gender = imsdb.filehandlers.load_config_file(args.config, 'gender')
+            character.gender = dict_gender[character.name.lower()]

@@ -8,6 +8,7 @@ import imsdb.filehandlers
 import imsdb.dataextraction
 import imsdb.dataadjustment
 import imsdb.datastructures
+import imsdb.DataFrame
 
 if __name__ == '__main__':
     # Process arguments from the command line
@@ -58,22 +59,14 @@ if __name__ == '__main__':
     # Extract the movie characters
     movie.characters = imsdb.dataextraction.extract_characters(imsdb_movie_script)
 
-    # Retrieve each character's real name
-    for character in movie.characters:
-        character.real_name = imsdb.dataadjustment.retrieve_character_real_name(
-            movie.sub_wikia,
-            character.name)
+    # Retrieve each character's real name and adding id
+    imsdb.dataextraction.get_real_name_and_id(movie.characters,movie)
 
     # Clean up list
     movie.clean_up_character_list()
 
     # Identify the gender of each character
-    for character in movie.characters:
-        if not args.bypass_gender_retrieval:
-            character.real_name = imsdb.dataadjustment.retrieve_character_gender(character.real_name)
-        else:
-            dict_gender = imsdb.filehandlers.load_config_file(args.config, 'gender')
-            character.gender = dict_gender[character.name.lower()]
+    imsdb.dataextraction.get_gender(movie.characters,args)
 
     # Return the list of the scenes in the movie
     movie.scenes = imsdb.dataextraction.extract_scenes(imsdb_movie_script)
@@ -88,10 +81,17 @@ if __name__ == '__main__':
             break
 
     # List all info
-    movie.print_info()
+    #movie.print_info()
         
     print ''
-    for character in movie.characters:
-        character.list_characters_interacted_with()
-        character.list_mentioned_characters()
-        character.list_appeared_scenes()
+
+    #for character in movie.characters:
+        #character.list_characters_interacted_with()
+        #character.list_mentioned_characters()
+        #character.list_appeared_scenes()
+
+
+    # --- This part  of the main script if for data purposes ---
+
+    #Builds excel with char info and another one with char interactions
+    imsdb.DataFrame.build_excel(movie.characters)
