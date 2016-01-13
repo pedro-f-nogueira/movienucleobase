@@ -75,6 +75,34 @@ def retrieve_character_real_name(sub_wikia, movie_character_name):
 
 
 def retrieve_character_gender(real_name, api_key_path = 'api_key'):
+    """Retrieve the character's gender from the Freebase database.
+
+    This function will query the Freebase's database for the character's name
+    and it will attempt to extract the gender from the first result found. The
+    string that represents the gender is extracted as it is from Freebase in 
+    lower case.
+
+    If the character is not human, the page on Freebase might no contain
+    any reference to the gender, so the function will return the
+    string "nogender".
+
+    The function accepts the character's real name resolved by the function
+    "retrieve_character_real_name()".
+
+    It is necessary to request a Google API enabled for Freebase and store it
+    in a text file. The path to the text file shall be passed as an argument
+    of the function, otherwise the script will look for a file name "api_key"
+    in the current path of the shell.
+
+    Args:
+        real_name (String): The character's name to be queried on Freebase
+        api_key_path (String): The path to the text file containing the 
+        Google API's key
+
+    Returns:
+        String: The character's gender
+    """
+
     logger = logging.getLogger(__name__)
     logger.debug('Attempting to get the gender from character: ' + real_name)
 
@@ -120,6 +148,22 @@ def retrieve_character_gender(real_name, api_key_path = 'api_key'):
 
 
 def get_freebase_character_id(real_name, freebase_api_key, freebase_search_url):
+    """Retrieve the character's ID associated to the Freebase database.
+    
+    This function retrives the character ID to be used by the 
+    function retrieve_character_gender() in order to extract information
+    related to the character.
+
+    More info: https://developers.google.com/freebase/
+
+    Args:
+        real_name (String): The character's name to be queried on Freebase
+        freebase_api_key (String): The Google API's key used to access Freebase
+        freebase_search_url (String): The URL to be used to perform searches
+
+    Returns:
+        String: The character's ID on Freebase
+    """
     logger = logging.getLogger(__name__)
 
     freebase_search_params = {
