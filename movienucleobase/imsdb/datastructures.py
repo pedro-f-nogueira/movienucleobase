@@ -123,6 +123,10 @@ class MovieData:
             else:
                 self.characters.remove(character)
 
+    def build_table(self):
+        for char_1 in self.characters:
+            print char_1 + ";"
+
 class MovieCharacter:
     def __init__(self, name):
         self._id = id
@@ -219,7 +223,10 @@ class MovieCharacter:
     def add_mentioned_character(self, name):
         logger = logging.getLogger(__name__)
 
-        if name in self.mentioned_characters and name != self.name:
+        if name == self.name:
+            return None
+
+        if name in self.mentioned_characters:
             self._mentioned_characters[name] = \
                 self._mentioned_characters[name] + 1
         else:
