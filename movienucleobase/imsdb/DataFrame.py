@@ -140,8 +140,8 @@ def build_excel(movie_chars_object,movie_title):
         gender                   TEXT  NOT NULL,
         n_scenes                 INT   NOT NULL,
         n_scenes_descr           TEXT  NOT NULL,
-        n_scenes_mention         TEXT  NOT NULL,
-        n_scenes_mention_descr   TEXT  NOT NULL,
+        n_scenes_mention         TEXT  ,
+        n_scenes_mention_descr   TEXT  ,
         FOREIGN KEY(id_m) REFERENCES movies(id_m)
         );'''
                  )
@@ -177,15 +177,15 @@ def build_excel(movie_chars_object,movie_title):
     #Populating chars table
     len_chars = len(Df_Id_1)
     for i in range(len_chars):
-        conn.execute('''insert into chars (id_m, id_c,name, gender, n_scenes, n_scenes_descr, n_scenes_mention, n_scenes_mention_descr) values (?,?,?,?,?,?,?,?)'''
-                     , (id_m,null,Df_Names[i],Df_Gender[i],Df_N_scenes_real[i],Df_scenes_real[i],null,null))
+        conn.execute('''insert into chars (id_m, id_c,name, gender, n_scenes, n_scenes_descr, n_scenes_mention, n_scenes_mention_descr) values (?,?,?,?,?,?,?,?)''' ,
+                     (id_m,Df_Id_1[i],Df_Names[i],Df_Gender[i],Df_N_scenes_real[i],','.join(map(str, Df_scenes_real[i])),null,null))
 
 
     #Populating interactions table
     len_int = len(Df_Char_1_id)
     for i in range(len_int):
-        conn.execute('''insert into interactions (id_m, char_1_id, char_2_id, n_interactions, type) values (?,?,?,?,?)'''
-                     , (id_m,Df_Char_1_id[i],Df_Char_2_id[i],Df_Number[i],0))
+        conn.execute('''insert into interactions (id_m, char_1_id, char_2_id, n_interactions, type) values (?,?,?,?,?)''' ,
+                     (id_m,Df_Char_1_id[i],Df_Char_2_id[i],Df_Number[i],0))
 
 
     conn.commit()
