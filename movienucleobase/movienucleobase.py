@@ -1,3 +1,11 @@
+"""
+.. module:: movienucleobase.py
+   :synopsis: The main module
+
+.. moduleauthor:: Pedro Araujo <pedroaraujo@colorlesscube.com>
+.. moduleauthor:: Pedro Nogueira <pedro.fig.nogueira@gmail.com>
+"""
+
 import argparse
 import re
 
@@ -9,6 +17,7 @@ import imsdb.dataextraction
 import imsdb.dataadjustment
 import imsdb.datastructures
 import imsdb.DataFrame
+import imsdb.dataexcel
 
 if __name__ == '__main__':
     # Process arguments from the command line
@@ -92,5 +101,8 @@ if __name__ == '__main__':
 
     # --- This part  of the main script if for data purposes ---
 
-    #Builds excel with char info and another one with char interactions
-    imsdb.DataFrame.build_excel(movie)
+    #Builds excel
+    imsdb.dataexcel.build_excel(movie)
+
+    #Builds database
+    imsdb.DataFrame.build_database(movie)
