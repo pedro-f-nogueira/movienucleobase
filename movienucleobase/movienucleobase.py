@@ -62,6 +62,9 @@ if __name__ == '__main__':
     # Retrieve each character's real name and adding id
     imsdb.dataextraction.get_real_name_and_id(movie.characters,movie)
 
+    # Clean up list
+    movie.clean_up_character_list()
+
     # Identify the gender of each character
     imsdb.dataextraction.get_gender(movie.characters,args)
 
