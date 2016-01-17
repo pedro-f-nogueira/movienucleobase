@@ -85,13 +85,12 @@ if __name__ == '__main__':
         
     print ''
 
-    for character in movie.characters:
-        character.list_characters_interacted_with()
+    #for character in movie.characters:
+        #character.list_characters_interacted_with()
         #character.list_mentioned_characters()
         #character.list_appeared_scenes()
-
 
     # --- This part  of the main script if for data purposes ---
 
     #Builds excel with char info and another one with char interactions
-    #imsdb.DataFrame.build_excel(movie.characters,args.movie_title)
+    imsdb.DataFrame.build_excel(movie)

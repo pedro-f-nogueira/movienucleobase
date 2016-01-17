@@ -10,36 +10,21 @@ def build_excel(movie):
     # 4 - Number of scenes in which he appeared
     # 5 - Character he interacted with
 
-    Df_Id_1 = []
-    Df_Names = []
-    Df_Gender = []
-    Df_N_scenes_real = []
-    Df_scenes_real = []
+    df_id_1, df_names, df_gender, df_n_scenes_real, df_scenes_real = movie.build_table_chars()
 
-    for character in movie.characters:
-        Df_Id_1.append(character.id)
-        Df_Names.append(character.name)
-        Df_Gender.append(character.gender)
-        Df_N_scenes_real.append(len(character.appeared_scenes))
-        Df_scenes_real.append(character.appeared_scenes)
-
-    DataFrameMovie = {
-                      'Id' : pd.Series(Df_Id_1),
-                      'Name' : pd.Series(Df_Names),
-                      'Gender' : pd.Series(Df_Gender),
-                      'Number_Scene_Appearances' : pd.Series(Df_N_scenes_real),
-                      'Scene_Appearances' : pd.Series(Df_scenes_real),
+    dataframeMovie = {
+                      'Id' : pd.Series(df_id_1),
+                      'Name' : pd.Series(df_names),
+                      'Gender' : pd.Series(df_gender),
+                      'Number_Scene_Appearances' : pd.Series(df_n_scenes_real),
+                      'Scene_Appearances' : pd.Series(df_scenes_real),
                       }
 
-    df = pd.DataFrame(DataFrameMovie)
+    df = pd.DataFrame(dataframeMovie)
 
-    # Create a Pandas Excel writer using XlsxWriter as the engine.
+    #Create a Pandas Excel writer
     #writer = pd.ExcelWriter('LOTR_1.xlsx', engine='xlsxwriter')
-
-    # Convert the dataframe to an XlsxWriter Excel object.
     #df.to_excel(writer, sheet_name='Sheet1')
-
-    # Close the Pandas Excel writer and output the Excel file.
     #writer.save()
 
     # Builds Excel with 4 columns relative to interactions
@@ -49,25 +34,21 @@ def build_excel(movie):
     # 2 - Character 2 Id
     # 3 - Number of Interactions
 
-    Df_Char_1, Df_Char_2, Df_Char_1_id, Df_Char_2_id, Df_Number = movie.build_table()
+    df_char_1, df_char_2, df_char_1_id, df_char_2_id, df_number = movie.build_table_interactions()
 
     DataFrameMovie = {
-                      'Char_1' : pd.Series(Df_Char_1),
-                      'Char_2' : pd.Series(Df_Char_2),
-                      'Char_1_id' : pd.Series(Df_Char_1_id),
-                      'Char_2_id' : pd.Series(Df_Char_2_id),
-                      'Number_of_Interactions' : pd.Series(Df_Number),
+                      'Char_1' : pd.Series(df_char_1),
+                      'Char_2' : pd.Series(df_char_2),
+                      'Char_1_id' : pd.Series(df_char_1_id),
+                      'Char_2_id' : pd.Series(df_char_2_id),
+                      'Number_of_Interactions' : pd.Series(df_number),
                       }
 
     df = pd.DataFrame(DataFrameMovie)
 
     # Create a Pandas Excel writer using XlsxWriter as the engine.
     #writer = pd.ExcelWriter('LOTR_2.xlsx', engine='xlsxwriter')
-
-    # Convert the dataframe to an XlsxWriter Excel object.
     #df.to_excel(writer, sheet_name='Sheet1')
-
-    # Close the Pandas Excel writer and output the Excel file.
     #writer.save()
 
     #SQLite Database - to be separated from this file
@@ -133,22 +114,22 @@ def build_excel(movie):
     id_m = cursor.fetchone()[0]
 
     #Populating chars table
-    len_chars = len(Df_Id_1)
+    len_chars = len(df_id_1)
     for i in range(len_chars):
         conn.execute('''insert into chars (id_m, id_c,name, gender, n_scenes, n_scenes_descr, n_scenes_mention, n_scenes_mention_descr) values (?,?,?,?,?,?,?,?)''' ,
-                     (id_m,Df_Id_1[i],Df_Names[i],Df_Gender[i],Df_N_scenes_real[i],','.join(map(str, Df_scenes_real[i])),null,null))
+                     (id_m,df_id_1[i],df_names[i],df_gender[i],df_n_scenes_real[i],','.join(map(str, df_scenes_real[i])),null,null))
 
 
     #Populating interactions table
-    len_int = len(Df_Char_1_id)
+    len_int = len(df_char_1_id)
     for i in range(len_int):
         conn.execute('''insert into interactions (id_m, char_1_id, char_2_id, n_interactions, type) values (?,?,?,?,?)''' ,
-                     (id_m,Df_Char_1_id[i],Df_Char_2_id[i],Df_Number[i],0))
+                     (id_m,df_char_1_id[i],df_char_2_id[i],df_number[i],0))
 
 
     conn.commit()
 
-    print "Records created successfully"
+    print 'Records created successfully'
 
     conn.close()
 
