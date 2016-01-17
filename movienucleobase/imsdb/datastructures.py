@@ -124,8 +124,45 @@ class MovieData:
                 self.characters.remove(character)
 
     def build_table(self):
-        for char_1 in self.characters:
-            print char_1 + ";"
+
+        logger = logging.getLogger(__name__)
+
+        source_name_list =[]
+        target_name_list =[]
+        source_id_list =[]
+        target_id_list =[]
+        weight_list =[]
+
+        for source in self.characters:
+            for target, value in source.characters_interacted_with.iteritems():
+                #Appends source and target names
+                source_name_list.append(source.name)
+                target_name_list.append(target)
+
+                #Appends source and target id's
+                source_id_list.append(source.id)
+
+                for char in self.characters:
+                    if char.name== target:
+                        target_id_list.append(char.id)
+                        break
+
+                #Appends intereraction weigth
+                weight_list.append(value)
+
+        ','.join(source_name_list)
+
+        logger.debug('Source Name List\n' + ','.join(source_name_list))
+        logger.debug('Target Name List\n' + ','.join(target_name_list))
+        logger.debug('Source Id List\n' + ','.join(map(str, source_id_list)))
+        logger.debug('Target Id List\n' + ','.join(map(str, target_id_list)))
+        logger.debug('Weight List\n' + ','.join(map(str, weight_list)))
+
+        return source_name_list, \
+               target_name_list, \
+               source_id_list, \
+               target_id_list, \
+               weight_list
 
 class MovieCharacter:
     def __init__(self, name):

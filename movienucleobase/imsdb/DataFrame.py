@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import sqlite3
 
-def build_excel(movie_chars_object,movie_title):
+def build_excel(movie):
     # Builds Excel with 5 columns
     # 1 - Id
     # 2 - Character name
@@ -16,7 +16,7 @@ def build_excel(movie_chars_object,movie_title):
     Df_N_scenes_real = []
     Df_scenes_real = []
 
-    for character in movie_chars_object:
+    for character in movie.characters:
         Df_Id_1.append(character.id)
         Df_Names.append(character.name)
         Df_Gender.append(character.gender)
@@ -43,54 +43,13 @@ def build_excel(movie_chars_object,movie_title):
     #writer.save()
 
     # Builds Excel with 4 columns relative to interactions
-    # 1 - Character 1
-    # 2 - Character 2
+    # 1 - Character 1 Name
+    # 2 - Character 2 Name
+    # 1 - Character 1 Id
+    # 2 - Character 2 Id
     # 3 - Number of Interactions
 
-    Df_Char_1 = []
-    Df_Char_2 = []
-    Df_Char_1_id = []
-    Df_Char_2_id = []
-    Df_Number = []
-
-    for character in movie_chars_object:
-        #iterates trough the dict
-        for key, value in character.characters_interacted_with.iteritems():
-            cont_var = 0
-            len_df_names = len(Df_Names)
-            #fills the arrays for the 1st element
-            if character.name != key:
-                for char in range(len_df_names):
-                    if character.name == Df_Names[char]:
-                        Df_Char_1.append(character.name)
-                        Df_Char_1_id.append(Df_Id_1[char])
-                    if key == Df_Names[char]:
-                        Df_Char_2.append(key)
-                        Df_Char_2_id.append(Df_Id_1[char])
-                        Df_Number.append(value)
-                        continue
-
-            #checks for repeated interactions
-            for record in range(len(Df_Char_1)):
-                if Df_Char_1[record] == character.name and Df_Char_2[record] == key or Df_Char_1[record] == key and Df_Char_2[record] == character.name:
-                    Df_Number[record] = Df_Number[record] + 1
-                    cont_var = 1
-
-            #skips if interactions is repeated
-            if cont_var == 1:
-                continue
-
-            #appends values for new interactions
-            if character.name != key:
-                for char in range(len(Df_Names)):
-                    if character.name == Df_Names[char]:
-                        Df_Id_1.append(id)
-                        Df_Char_1_id.append(Df_Id_1[char])
-                        Df_Char_1.append(character.name)
-                    if key == Df_Names[char]:
-                        Df_Char_2_id.append(Df_Id_1[char])
-                        Df_Char_2.append(key)
-                        Df_Number.append(value)
+    Df_Char_1, Df_Char_2, Df_Char_1_id, Df_Char_2_id, Df_Number = movie.build_table()
 
     DataFrameMovie = {
                       'Char_1' : pd.Series(Df_Char_1),
@@ -166,7 +125,7 @@ def build_excel(movie_chars_object,movie_title):
 
     null = None
     #Populating movies table
-    conn.execute('''insert into movies (id_m,name) values (?,?)''', (null,movie_title))
+    conn.execute('''insert into movies (id_m,name) values (?,?)''', (null,movie.title))
 
     #Getting id_m
     cursor=conn.cursor()
