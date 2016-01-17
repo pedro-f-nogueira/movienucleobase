@@ -13,11 +13,11 @@ def build_excel(movie):
     df_id_1, df_names, df_gender, df_n_scenes_real, df_scenes_real = movie.build_table_chars()
 
     dataframeMovie = {
-                      'Id' : pd.Series(df_id_1),
-                      'Name' : pd.Series(df_names),
-                      'Gender' : pd.Series(df_gender),
-                      'Number_Scene_Appearances' : pd.Series(df_n_scenes_real),
-                      'Scene_Appearances' : pd.Series(df_scenes_real),
+                      'Id': pd.Series(df_id_1),
+                      'Name': pd.Series(df_names),
+                      'Gender': pd.Series(df_gender),
+                      'Number_Scene_Appearances': pd.Series(df_n_scenes_real),
+                      'Scene_Appearances': pd.Series(df_scenes_real),
                       }
 
     df = pd.DataFrame(dataframeMovie)
@@ -37,11 +37,11 @@ def build_excel(movie):
     df_char_1, df_char_2, df_char_1_id, df_char_2_id, df_number = movie.build_table_interactions()
 
     DataFrameMovie = {
-                      'Char_1' : pd.Series(df_char_1),
-                      'Char_2' : pd.Series(df_char_2),
-                      'Char_1_id' : pd.Series(df_char_1_id),
-                      'Char_2_id' : pd.Series(df_char_2_id),
-                      'Number_of_Interactions' : pd.Series(df_number),
+                      'Char_1': pd.Series(df_char_1),
+                      'Char_2': pd.Series(df_char_2),
+                      'Char_1_id': pd.Series(df_char_1_id),
+                      'Char_2_id': pd.Series(df_char_2_id),
+                      'Number_of_Interactions': pd.Series(df_number),
                       }
 
     df = pd.DataFrame(DataFrameMovie)
@@ -106,25 +106,56 @@ def build_excel(movie):
 
     null = None
     #Populating movies table
-    conn.execute('''insert into movies (id_m,name) values (?,?)''', (null,movie.title))
+    conn.execute('insert into movies ' +
+                 '(id_m,' +
+                 'name)' +
+                 'values (?,?)',
+                 (null,
+                  movie.title))
 
     #Getting id_m
     cursor=conn.cursor()
-    cursor.execute("SELECT MAX(id_m) FROM movies")
+    cursor.execute('SELECT MAX (id_m) FROM movies')
     id_m = cursor.fetchone()[0]
 
     #Populating chars table
     len_chars = len(df_id_1)
     for i in range(len_chars):
-        conn.execute('''insert into chars (id_m, id_c,name, gender, n_scenes, n_scenes_descr, n_scenes_mention, n_scenes_mention_descr) values (?,?,?,?,?,?,?,?)''' ,
-                     (id_m,df_id_1[i],df_names[i],df_gender[i],df_n_scenes_real[i],','.join(map(str, df_scenes_real[i])),null,null))
+        conn.execute('insert into chars ' +
+                     '(id_m,' +
+                     'id_c,' +
+                     'name,' +
+                     'gender,' +
+                     'n_scenes,' +
+                     'n_scenes_descr,' +
+                     'n_scenes_mention,' +
+                     'n_scenes_mention_descr)' +
+                     'values (?,?,?,?,?,?,?,?)',
+                     (id_m,
+                      df_id_1[i],
+                      df_names[i],
+                      df_gender[i],
+                      df_n_scenes_real[i],
+                      ','.join(map(str, df_scenes_real[i])),
+                      null,
+                      null))
 
 
     #Populating interactions table
     len_int = len(df_char_1_id)
     for i in range(len_int):
-        conn.execute('''insert into interactions (id_m, char_1_id, char_2_id, n_interactions, type) values (?,?,?,?,?)''' ,
-                     (id_m,df_char_1_id[i],df_char_2_id[i],df_number[i],0))
+        conn.execute('insert into interactions' +
+                     '(id_m,' +
+                     'char_1_id,' +
+                     'char_2_id,' +
+                     'n_interactions,' +
+                     'type)' +
+                     'values (?,?,?,?,?)',
+                     (id_m,
+                      df_char_1_id[i],
+                      df_char_2_id[i],
+                      df_number[i],
+                      0))
 
 
     conn.commit()

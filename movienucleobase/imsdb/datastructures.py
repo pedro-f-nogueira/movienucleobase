@@ -123,7 +123,7 @@ class MovieData:
             else:
                 self.characters.remove(character)
 
-    def build_table(self):
+    def build_table_interactions(self):
 
         logger = logging.getLogger(__name__)
 
@@ -163,6 +163,32 @@ class MovieData:
                source_id_list, \
                target_id_list, \
                weight_list
+
+    def build_table_chars(self):
+
+        logger = logging.getLogger(__name__)
+
+        df_id_1 = []
+        df_names = []
+        df_gender = []
+        df_n_scenes_real = []
+        df_scenes_real = []
+
+        for char in self.characters:
+            df_id_1.append(char.id)
+            df_names.append(char.name)
+            df_gender.append(char.gender)
+            df_n_scenes_real.append(len(char.appeared_scenes))
+            df_scenes_real.append(char.appeared_scenes)
+
+        logger.debug('Char Id \n' + ','.join(map(str, df_id_1)))
+        logger.debug('Char Name\n' + ','.join(df_names))
+        logger.debug('Char Gender\n' + ','.join( df_gender))
+        logger.debug('N. Scenes appeared\n' + ','.join(map(str, df_n_scenes_real)))
+        logger.debug('Scenes appeared\n' + ','.join(map(str, df_scenes_real)))
+
+        return df_id_1, df_names, df_gender, df_n_scenes_real, df_scenes_real
+
 
 class MovieCharacter:
     def __init__(self, name):
