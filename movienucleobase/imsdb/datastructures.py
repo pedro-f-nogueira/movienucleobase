@@ -182,7 +182,7 @@ class MovieCharacter:
         # only add the character if it is the only element in the list.
         logger = logging.getLogger(__name__)
 
-        addedCharacter = []
+        added_character = ""
 
         # If the lists of names is empty, terminate the function immediately
         if len(list_of_names)==0:
@@ -191,16 +191,17 @@ class MovieCharacter:
         # Detect which characters were already added as interactions and
         # increase the respective counters of interactions
         for l in set(list_of_names).intersection(self._characters_interacted_with):
-            if l in self._characters_interacted_with and l!=self.name or \
-               len(l)==1 and l==self.name:
+            if l in self._characters_interacted_with and l!=self.name:
+                added_character = l
                 self._characters_interacted_with[l] = self._characters_interacted_with[l] + 1
 
         # Detect the characters that weren't added as interaction yet
         for l in set(list_of_names).difference(self._characters_interacted_with):
-            if l in char_list:
+            if l in char_list and l!=self.name:
+                added_character = l
                 self._characters_interacted_with[l] = 1
 
-        logger.debug('The character ' + self.name + ' interacted with: ' + ', '.join(addedCharacter))
+        logger.debug('The character ' + self.name + ' interacted with: ' + l)
 
         return True
 
