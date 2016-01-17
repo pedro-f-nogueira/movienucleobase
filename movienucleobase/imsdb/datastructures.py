@@ -143,20 +143,57 @@ class MovieData:
                 source_id_list.append(source.id)
 
                 for char in self.characters:
-                    if char.name== target:
+                    if char.name == target:
                         target_id_list.append(char.id)
                         break
 
                 #Appends intereraction weigth
                 weight_list.append(value)
 
-        ','.join(source_name_list)
+        logger.debug('Interaction:Source Name List\n' + ','.join(source_name_list))
+        logger.debug('Interaction:Target Name List\n' + ','.join(target_name_list))
+        logger.debug('Interaction:Source Id List\n' + ','.join(map(str, source_id_list)))
+        logger.debug('Interaction:Target Id List\n' + ','.join(map(str, target_id_list)))
+        logger.debug('Interaction:Weight List\n' + ','.join(map(str, weight_list)))
 
-        logger.debug('Source Name List\n' + ','.join(source_name_list))
-        logger.debug('Target Name List\n' + ','.join(target_name_list))
-        logger.debug('Source Id List\n' + ','.join(map(str, source_id_list)))
-        logger.debug('Target Id List\n' + ','.join(map(str, target_id_list)))
-        logger.debug('Weight List\n' + ','.join(map(str, weight_list)))
+        return source_name_list, \
+               target_name_list, \
+               source_id_list, \
+               target_id_list, \
+               weight_list
+
+    def build_table_mentions(self):
+
+        logger = logging.getLogger(__name__)
+
+        source_name_list =[]
+        target_name_list =[]
+        source_id_list =[]
+        target_id_list =[]
+        weight_list =[]
+
+        for source in self.characters:
+            for target, value in source.mentioned_characters.iteritems():
+                #Appends source and target names
+                source_name_list.append(source.name)
+                target_name_list.append(target)
+
+                #Appends source and target id's
+                source_id_list.append(source.id)
+
+                for char in self.characters:
+                    if char.name == target:
+                        target_id_list.append(char.id)
+                        break
+
+                #Appends intereraction weigth
+                weight_list.append(value)
+
+        logger.debug('Mention:Source Name List\n' + ','.join(source_name_list))
+        logger.debug('Mention:Target Name List\n' + ','.join(target_name_list))
+        logger.debug('Mention:Source Id List\n' + ','.join(map(str, source_id_list)))
+        logger.debug('Mention:Target Id List\n' + ','.join(map(str, target_id_list)))
+        logger.debug('Mention:Weight List\n' + ','.join(map(str, weight_list)))
 
         return source_name_list, \
                target_name_list, \
@@ -171,23 +208,27 @@ class MovieData:
         df_id_1 = []
         df_names = []
         df_gender = []
-        df_n_scenes_real = []
-        df_scenes_real = []
+        df_n_scenes_int = []
+        df_scenes_int = []
+        #df_n_scenes_men = []
+        #df_scenes_men = []
 
         for char in self.characters:
             df_id_1.append(char.id)
             df_names.append(char.name)
             df_gender.append(char.gender)
-            df_n_scenes_real.append(len(char.appeared_scenes))
-            df_scenes_real.append(char.appeared_scenes)
+            df_n_scenes_int.append(len(char.appeared_scenes))
+            df_scenes_int.append(char.appeared_scenes)
+            #df_n_scenes_men.append(len(char.appeared_scenes))
+            #df_scenes_men.append(char.appeared_scenes)
 
         logger.debug('Char Id \n' + ','.join(map(str, df_id_1)))
         logger.debug('Char Name\n' + ','.join(df_names))
         logger.debug('Char Gender\n' + ','.join( df_gender))
-        logger.debug('N. Scenes appeared\n' + ','.join(map(str, df_n_scenes_real)))
-        logger.debug('Scenes appeared\n' + ','.join(map(str, df_scenes_real)))
+        logger.debug('N. Scenes appeared\n' + ','.join(map(str, df_n_scenes_int)))
+        logger.debug('Scenes appeared\n' + ','.join(map(str, df_scenes_int)))
 
-        return df_id_1, df_names, df_gender, df_n_scenes_real, df_scenes_real
+        return df_id_1, df_names, df_gender, df_n_scenes_int, df_scenes_int
 
 
 class MovieCharacter:
@@ -199,6 +240,7 @@ class MovieCharacter:
         self._characters_interacted_with = {}
         self._mentioned_characters = {}
         self._appeared_scenes = []
+        #missing appeared scenes relative to mentions
 
     @property
     def id(self):

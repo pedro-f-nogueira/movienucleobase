@@ -102,7 +102,11 @@ if __name__ == '__main__':
     # --- This part  of the main script if for data purposes ---
 
     #Builds excel
-    imsdb.dataexcel.build_excel(movie)
+    imsdb.dataexcel.build_excel_chars(movie)
+    imsdb.dataexcel.build_excel_interactions(movie)
+    imsdb.dataexcel.build_excel_mentions(movie)
 
     #Builds database
-    imsdb.DataFrame.build_database(movie)
+    #imsdb.DataFrame.build_database(movie)
+
+    movie.build_table_mentions()
