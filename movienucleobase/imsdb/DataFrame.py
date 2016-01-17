@@ -43,10 +43,9 @@ def build_excel(movie_chars_object,movie_title):
     #writer.save()
 
     # Builds Excel with 4 columns relative to interactions
-    # 1 - Id
-    # 2 - Character 1
-    # 3 - Character 2
-    # 4 - Number of Interactions
+    # 1 - Character 1
+    # 2 - Character 2
+    # 3 - Number of Interactions
 
     Df_Char_1 = []
     Df_Char_2 = []
