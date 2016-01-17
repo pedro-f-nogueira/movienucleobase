@@ -219,7 +219,7 @@ class MovieCharacter:
     def add_mentioned_character(self, name):
         logger = logging.getLogger(__name__)
 
-        if name in self.mentioned_characters:
+        if name in self.mentioned_characters and name != self.name:
             self._mentioned_characters[name] = \
                 self._mentioned_characters[name] + 1
         else:
