@@ -107,6 +107,4 @@ if __name__ == '__main__':
     imsdb.dataexcel.build_excel_mentions(movie)
 
     #Builds database
-    #imsdb.DataFrame.build_database(movie)
-
-    movie.build_table_mentions()
+    imsdb.DataFrame.build_database(movie)

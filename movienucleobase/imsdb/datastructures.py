@@ -133,22 +133,49 @@ class MovieData:
         target_id_list =[]
         weight_list =[]
 
+        #inserts the first element - needed for verification to work
+        # to be reviewed - not proud  :(
         for source in self.characters:
             for target, value in source.characters_interacted_with.iteritems():
                 #Appends source and target names
-                source_name_list.append(source.name)
-                target_name_list.append(target)
+                        source_name_list.append(source.name)
+                        target_name_list.append(target)
 
-                #Appends source and target id's
-                source_id_list.append(source.id)
+                        #Appends source and target id's
+                        source_id_list.append(source.id)
 
-                for char in self.characters:
-                    if char.name == target:
-                        target_id_list.append(char.id)
+                        for char in self.characters:
+                            if char.name == target:
+                                target_id_list.append(char.id)
+                                break
+
+                        #Appends intereraction weigth
+                        weight_list.append(value)
+
                         break
+            break
 
-                #Appends intereraction weigth
-                weight_list.append(value)
+        for source in self.characters:
+            for target, value in source.characters_interacted_with.iteritems():
+                for i in range(len(source_name_list)):
+                    if source.name != source_name_list[i] and target != target_name_list [i]\
+                    or target != source_name_list[i] and source.name != target_name_list:
+                        #Appends source and target names
+                        source_name_list.append(source.name)
+                        target_name_list.append(target)
+
+                        #Appends source and target id's
+                        source_id_list.append(source.id)
+
+                        for char in self.characters:
+                            if char.name == target:
+                                target_id_list.append(char.id)
+                                break
+
+                        #Appends intereraction weigth
+                        weight_list.append(value)
+
+                        break
 
         logger.debug('Interaction:Source Name List\n' + ','.join(source_name_list))
         logger.debug('Interaction:Target Name List\n' + ','.join(target_name_list))
