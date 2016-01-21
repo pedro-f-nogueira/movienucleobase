@@ -7,11 +7,11 @@
 """
 
 import logging
-import wikia
-import unidecode
 import __builtin__
 import json
 import urllib
+import wikia
+import unidecode
 
 
 def retrieve_character_real_name(sub_wikia, movie_character_name):
@@ -74,7 +74,7 @@ def retrieve_character_real_name(sub_wikia, movie_character_name):
     return real_name
 
 
-def retrieve_character_gender(real_name, api_key_path = 'api_key'):
+def retrieve_character_gender(real_name, api_key_path='api_key'):
     """Retrieve the character's gender from the Freebase database.
 
     This function will query the Freebase's database for the character's name
@@ -176,7 +176,7 @@ def get_freebase_character_id(real_name, freebase_api_key, freebase_search_url):
 
     response = json.loads(urllib.urlopen(url).read())
 
-    if len(response['result'])<=0 or 'id' not in response['result'][0].keys():
+    if len(response['result']) <= 0 or 'id' not in response['result'][0].keys():
         return
     else:
         return response['result'][0]['id']
