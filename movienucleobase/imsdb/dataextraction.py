@@ -42,7 +42,7 @@ def extract_characters(imsdb_movie_script):
     logger = logging.getLogger(__name__)
     logger.info('Extracting the characters...')
 
-    movie_characters_names_extracted = []
+    movie_chars_names_extracted = []
     movie_characters_list = []
 
     # *** Regex explanation ***
@@ -63,10 +63,10 @@ def extract_characters(imsdb_movie_script):
             ur'(?P<movie_char>.*?)<\/b>' + \
             ur'(?P<movie_text>.*?)(?=<b>)'
 
-    for m in re.finditer(regex , imsdb_movie_script):
-        movie_characters_names_extracted.append(m.group('movie_char'))
+    for char in re.finditer(regex, imsdb_movie_script):
+        movie_chars_names_extracted.append(char.group('movie_char'))
     
-    for name in movie_characters_names_extracted:
+    for name in movie_chars_names_extracted:
         if not imsdb.utilities.valid_movie_character(name):
             continue
         
@@ -79,7 +79,8 @@ def extract_characters(imsdb_movie_script):
             logger.debug('Rejecting possible invalid character: ' + movie_character_name)
             continue
 
-        if imsdb.utilities.similar_character_already_added(movie_characters_list, movie_character_name):
+        if imsdb.utilities.similar_character_already_added(movie_characters_list,
+                                                           movie_character_name):
             continue
 
         # Check if the character was already collected in the list
@@ -143,12 +144,12 @@ def extract_scenes(imsdb_movie_script):
 
     movie_scenes_list = []
 
-    for m in re.finditer(regex, imsdb_movie_script):
-        movie_scenes_list.append(m.group('movie_text'))
+    for mscene in re.finditer(regex, imsdb_movie_script):
+        movie_scenes_list.append(mscene.group('movie_text'))
      
     return movie_scenes_list
 
-def process_movie_single_scene(single_scene, movieCharactersList, scene_number):
+def process_movie_single_scene(single_scene, movie_characters_list, scene_number):
     """Parse a single movie scene and extract the interactions between the
     characters.
 
@@ -180,7 +181,7 @@ def process_movie_single_scene(single_scene, movieCharactersList, scene_number):
             ur'(?P<movie_char>.*?)<\/b>' + \
             ur'(?P<movie_text>.*?)(?=<b>)'
 
-    p = re.compile(regex, re.MULTILINE | re.DOTALL)
+    process = re.compile(regex, re.MULTILINE | re.DOTALL)
      
     # The elements of the list movie_lines are extracted in the
     # following manner:
@@ -188,10 +189,9 @@ def process_movie_single_scene(single_scene, movieCharactersList, scene_number):
     #   [Line 1] - [Character name, Character line]
     #   [Line 2] - [Character name, Character line]
     #       ...
-    movie_lines = re.findall(p, single_scene)
+    movie_lines = re.findall(process, single_scene)
 
-    movieCharacterFromScene = ""
-    charactersInteractedWith = []
+    characters_interacted_with = []
 
     for line in movie_lines:
         # First step:
@@ -209,8 +209,8 @@ def process_movie_single_scene(single_scene, movieCharactersList, scene_number):
 
         movie_char_from_scene = imsdb.utilities.strip_unwanted_strings(movie_char_from_scene)
 
-        if movie_char_from_scene not in charactersInteractedWith: 
-            charactersInteractedWith.append(movie_char_from_scene)
+        if movie_char_from_scene not in characters_interacted_with:
+            characters_interacted_with.append(movie_char_from_scene)
 
         # Second step:
         #   - Check for any mentioned characters
@@ -221,31 +221,33 @@ def process_movie_single_scene(single_scene, movieCharactersList, scene_number):
 
         imsdb.utilities.check_mentioned_characters(movie_char_from_scene,
                                                    movie_line_from_scene,
-                                                   movieCharactersList)
+                                                   movie_characters_list)
 
     char_list = []
-    for char in movieCharactersList:
+    for char in movie_characters_list:
         char_list.append(char.name)
 
-    for l1 in movieCharactersList:
-        for l2 in charactersInteractedWith:
-            if l1.name==l2:
-                l1.add_characters_interacted_with(charactersInteractedWith,char_list)
-                l1.add_appeared_scene(scene_number)
+    for char1 in movie_characters_list:
+        for char2 in characters_interacted_with:
+            if char1.name == char2:
+                char1.add_characters_interacted_with(characters_interacted_with, char_list)
+                char1.add_appeared_scene(scene_number)
 
-    return charactersInteractedWith
+    return characters_interacted_with
 
-def get_real_name_and_id(characters,movie):
-    #Gets the real name of the char from the wikia
-    #Adds an id to that char
-    id = 0
+def get_real_name_and_id(characters, movie):
+    """
+    Gets the real name of the char from the wikia
+    Adds an id to that char
+    """
+    identi = 0
     for character in characters:
         character.real_name = imsdb.dataadjustment.retrieve_character_real_name(
             movie.sub_wikia,
             character.name)
 
-        character.id = id
-        id = id +1
+        character.id = identi
+        identi = identi +1
 
     # Clean up list
     real_name_list = []
@@ -256,12 +258,14 @@ def get_real_name_and_id(characters,movie):
         else:
             movie.characters.remove(character)
 
-def get_gender(characters,args):
-    #Gets the gender for each char and adds it to the object
-    #Gender can be:
-    #male
-    #female
-    #no gender
+def get_gender(characters, args):
+    """
+    Gets the gender for each char and adds it to the object
+    Gender can be:
+    male
+    female
+    no gender
+    """
     for character in characters:
         if not args.bypass_gender_retrieval:
             character.real_name = imsdb.dataadjustment.retrieve_character_gender(character.real_name)
