@@ -21,77 +21,78 @@ import imsdb.dataexcel
 
 if __name__ == '__main__':
     # Process arguments from the command line
-    parser = argparse.ArgumentParser()
+    PARSER = argparse.ArgumentParser()
 
-    parser.add_argument('filename',
+    PARSER.add_argument('filename',
                         help='Name of the file containing the movie script')
 
-    parser.add_argument('--config',
+    PARSER.add_argument('--config',
                         help='Name of the configuration file')
 
-    parser.add_argument('--nscenes',
+    PARSER.add_argument('--nscenes',
                         help='Number of scenes to process')
 
-    parser.add_argument('--movie_title',
+    PARSER.add_argument('--movie_title',
                         help='The title of the movie')
 
-    parser.add_argument('--sub_wikia',
+    PARSER.add_argument('--sub_wikia',
                         help='The subwikia associated to the movie')
 
-    parser.add_argument('--bypass_gender_retrieval',
+    PARSER.add_argument('--bypass_gender_retrieval',
                         help='Bypass the retrieval of gender from freebase',
                         action='store_true')
 
-    args = parser.parse_args()
+    ARGS = PARSER.parse_args()
 
-    if args.nscenes:
-        nscenes = int(args.nscenes)
+    if ARGS.nscenes:
+        NSCENES = int(ARGS.nscenes)
     else:
-        nscenes = 0
+        NSCENES = 0
 
     # Setup the logging system
-    logconfig = 'logging_config.ini'
-    logfile = 'movienucleobase.log'
-    logging.config.fileConfig(logconfig, defaults={'logfilename': logfile})
-    logger = logging.getLogger(__name__)
+    LOGCONFIG = 'logging_config.ini'
+    LOGFILE = 'movienucleobase.log'
+    logging.config.fileConfig(LOGCONFIG, defaults={'logfilename': LOGFILE})
+    LOGGER = logging.getLogger(__name__)
 
-    movie = imsdb.datastructures.MovieData(args.movie_title, args.sub_wikia)
+    MOVIE = imsdb.datastructures.MovieData(ARGS.movie_title, ARGS.sub_wikia)
 
     # Loads the IMSDb movie script into a list
     # The script terminates if the script is empty
-    imsdb_movie_script = imsdb.filehandlers.open_movie_script(args.filename)
+    IMSDB_MOVIE_SCRIPT = imsdb.filehandlers.open_movie_script(ARGS.filename)
 
-    if not imsdb_movie_script:
+    if not IMSDB_MOVIE_SCRIPT:
         print "Error: Empty movie script."
         quit()
 
     # Extract the movie characters
-    movie.characters = imsdb.dataextraction.extract_characters(imsdb_movie_script)
+    MOVIE.characters = imsdb.dataextraction.extract_characters(IMSDB_MOVIE_SCRIPT)
 
     # Retrieve each character's real name and adding id
-    imsdb.dataextraction.get_real_name_and_id(movie.characters,movie)
+    imsdb.dataextraction.get_real_name_and_id(MOVIE.characters, MOVIE)
 
     # Clean up list
-    movie.clean_up_character_list()
+    MOVIE.clean_up_character_list()
 
     # Identify the gender of each character
-    imsdb.dataextraction.get_gender(movie.characters,args)
+    imsdb.dataextraction.get_gender(MOVIE.characters, ARGS)
 
     # Return the list of the scenes in the movie
-    movie.scenes = imsdb.dataextraction.extract_scenes(imsdb_movie_script)
+    MOVIE.scenes = imsdb.dataextraction.extract_scenes(IMSDB_MOVIE_SCRIPT)
 
     # Draw the interactions
-    for i, scene in enumerate(movie.scenes):
-        logger.debug('\nNew scene: ' + str(i))
-        logger.debug(re.sub('\s{2,}', '\n', scene))
-        logger.debug(imsdb.dataextraction.process_movie_single_scene(scene, movie.characters, i))
+    for i, scene in enumerate(MOVIE.scenes):
+        LOGGER.debug('\nNew scene: ' + str(i))
+        LOGGER.debug(re.sub('\s{2,}', '\n', scene))
+        LOGGER.debug(imsdb.dataextraction.process_movie_single_scene(scene
+                                                                     , MOVIE.characters
+                                                                     , i))
 
-        if nscenes>0 and i==nscenes:
+        if NSCENES > 0 and i == NSCENES:
             break
 
     # List all info
     #movie.print_info()
-        
     print ''
 
     #for character in movie.characters:
@@ -102,9 +103,9 @@ if __name__ == '__main__':
     # --- This part  of the main script if for data purposes ---
 
     #Builds excel
-    imsdb.dataexcel.build_excel_chars(movie)
-    imsdb.dataexcel.build_excel_interactions(movie)
-    imsdb.dataexcel.build_excel_mentions(movie)
+    imsdb.dataexcel.build_excel_chars(MOVIE)
+    imsdb.dataexcel.build_excel_interactions(MOVIE)
+    imsdb.dataexcel.build_excel_mentions(MOVIE)
 
     #Builds database
-    imsdb.DataFrame.build_database(movie)
+    imsdb.DataFrame.build_database(MOVIE)
