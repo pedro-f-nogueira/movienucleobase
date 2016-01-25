@@ -40,10 +40,16 @@ class MovieData:
 
     @property
     def title(self):
+        """
+        Returns the movie title
+        """
         return self._title 
 
     @property
     def sub_wikia(self):
+        """
+        Returns the sub_wikia
+        """
         return self._sub_wikia
 
     @property
@@ -57,7 +63,7 @@ class MovieData:
         return self._characters
 
     @characters.setter
-    def characters(self, x):
+    def characters(self, argx):
         """Set the characters.
         
         Args:
@@ -65,7 +71,7 @@ class MovieData:
             from the movie script
         """
 
-        self._characters = x
+        self._characters = argx
 
     @property
     def scenes(self):
@@ -78,14 +84,14 @@ class MovieData:
         return self._scenes
 
     @scenes.setter
-    def scenes(self, x):
+    def scenes(self, argx):
         """Set the movie scenes.
         
         Args:
-            x (list of str): List of all scenes from the movie
+            argx (list of str): List of all scenes from the movie
         """
 
-        self._scenes = x
+        self._scenes = argx
 
     def print_info(self):
         """Print the movie information:
@@ -115,6 +121,9 @@ class MovieData:
                   ' ; Gender: ' + character.gender
 
     def clean_up_character_list(self):
+        """
+        Cleans the char list from some unwanted names
+        """
         real_name_list = []
 
         for character in self.characters:
@@ -124,41 +133,51 @@ class MovieData:
                 self.characters.remove(character)
 
     def build_table_interactions(self):
-
+        """
+        Helps with the process of building the interations info
+        Returns the info relative to char mentions in an id manner
+        This way building the table is much easier
+        returns ex:
+        1 - Frodo
+        2 - Sam
+        3 - 1 -  Frodo id
+        4 - 4 - Sam id
+        5 - 6 - times they interacted
+        """
         logger = logging.getLogger(__name__)
 
-        source_name_list =[]
-        target_name_list =[]
-        source_id_list =[]
-        target_id_list =[]
-        weight_list =[]
+        source_name_list = []
+        target_name_list = []
+        source_id_list = []
+        target_id_list = []
+        weight_list = []
 
         #inserts the first element - needed for verification to work
         # to be reviewed - not proud  :(
         for source in self.characters:
             for target, value in source.characters_interacted_with.iteritems():
                 #Appends source and target names
-                        source_name_list.append(source.name)
-                        target_name_list.append(target)
+                source_name_list.append(source.name)
+                target_name_list.append(target)
 
-                        #Appends source and target id's
-                        source_id_list.append(source.id)
+                #Appends source and target id's
+                source_id_list.append(source.id)
 
-                        for char in self.characters:
-                            if char.name == target:
-                                target_id_list.append(char.id)
-                                break
-
-                        #Appends intereraction weigth
-                        weight_list.append(value)
-
+                for char in self.characters:
+                    if char.name == target:
+                        target_id_list.append(char.id)
                         break
+
+                #Appends intereraction weigth
+                weight_list.append(value)
+
+                break
             break
 
         for source in self.characters:
             for target, value in source.characters_interacted_with.iteritems():
                 for i in range(len(source_name_list)):
-                    if source.name != source_name_list[i] and target != target_name_list [i]\
+                    if source.name != source_name_list[i] and target != target_name_list[i]\
                     or target != source_name_list[i] and source.name != target_name_list:
                         #Appends source and target names
                         source_name_list.append(source.name)
@@ -190,14 +209,24 @@ class MovieData:
                weight_list
 
     def build_table_mentions(self):
-
+        """
+        Helps with the process of building the mentions info
+        Returns the info relative to char mentions in an id manner
+        This way building the table is much easier
+        returns ex:
+        1 - Frodo
+        2 - Sam
+        3 - 1 -  Frodo id
+        4 - 4 - Sam id
+        5 - 6 - times they interacted
+        """
         logger = logging.getLogger(__name__)
 
-        source_name_list =[]
-        target_name_list =[]
-        source_id_list =[]
-        target_id_list =[]
-        weight_list =[]
+        source_name_list = []
+        target_name_list = []
+        source_id_list = []
+        target_id_list = []
+        weight_list = []
 
         for source in self.characters:
             for target, value in source.mentioned_characters.iteritems():
@@ -229,7 +258,15 @@ class MovieData:
                weight_list
 
     def build_table_chars(self):
-
+        """
+        Helps with the process of building the chars info
+        returns ex:
+        1 - [1, 2, 3]
+        2 - [Sam, Frodo, Legolas]
+        3 - [Male, Male, Male]
+        4 - [2, 3, 1] - Number of scenes appeared
+        5 - [[1, 5], [2, 4, 6], [3]]
+        """
         logger = logging.getLogger(__name__)
 
         df_id_1 = []
@@ -251,7 +288,7 @@ class MovieData:
 
         logger.debug('Char Id \n' + ','.join(map(str, df_id_1)))
         logger.debug('Char Name\n' + ','.join(df_names))
-        logger.debug('Char Gender\n' + ','.join( df_gender))
+        logger.debug('Char Gender\n' + ','.join(df_gender))
         logger.debug('N. Scenes appeared\n' + ','.join(map(str, df_n_scenes_int)))
         logger.debug('Scenes appeared\n' + ','.join(map(str, df_scenes_int)))
 
@@ -260,6 +297,9 @@ class MovieData:
 
 class MovieCharacter:
     def __init__(self, name):
+        """
+        Iniates all the varaibles inerent to the movie char
+        """
         self._id = id
         self._name = name
         self._real_name = ""
@@ -271,41 +311,71 @@ class MovieCharacter:
 
     @property
     def id(self):
+        """
+        Returns char id, ex: 1
+        """
         return self._id
 
     @property
     def name(self):
+        """
+        Returns char name ex: Frodo
+        """
         return self._name
 
     @property
     def real_name(self):
+        """
+        Returns char real name, ex: Frodo Baggins
+        """
         return self._real_name
 
     @property
     def gender(self):
+        """
+        Returns char real name, ex: Male
+        """
         return self._gender
 
     @property
     def appeared_scenes(self):
+        """
+        Returns a list of scenes in which the char appeared
+        ex:[1, 6, 7, 8, 9, 11, 12, 13, 35, 86, 95]
+        """
         return self._appeared_scenes
 
     @property
     def characters_interacted_with(self):
+        """
+        Returns a list of scenes in which the char appeared
+        ex:[Frodo, Galadriel, Legolas]
+        """
         return self._characters_interacted_with
 
     @property
     def mentioned_characters(self):
+        """
+        Returns a list of scenes in which the char was mentioned
+        ex:[Frodo, Galadriel, Legolas]
+        """
         return self._mentioned_characters
 
     @real_name.setter
-    def real_name(self, x):
-        self._real_name = x
+    def real_name(self, argx):
+        """
+        Sets the char real name
+        """
+        self._real_name = argx
 
     @gender.setter
-    def gender(self, x):
-        self._gender = x
+    def gender(self, argx):
+        """
+        Sets the char gender
+        """
+        self._gender = argx
 
-    def add_characters_interacted_with(self, list_of_names,char_list):
+    def add_characters_interacted_with(self, list_of_names, char_list):
         # The function will accept a list of characters that the present
         # character interacted during a scene.
         #
@@ -321,19 +391,19 @@ class MovieCharacter:
         added_character = ""
 
         # If the lists of names is empty, terminate the function immediately
-        if len(list_of_names)==0:
+        if len(list_of_names) == 0:
             return False
 
         # Detect which characters were already added as interactions and
         # increase the respective counters of interactions
         for l in set(list_of_names).intersection(self._characters_interacted_with):
-            if l in self._characters_interacted_with and l!=self.name:
+            if l in self._characters_interacted_with and l != self.name:
                 added_character = l
                 self._characters_interacted_with[l] = self._characters_interacted_with[l] + 1
 
         # Detect the characters that weren't added as interaction yet
         for l in set(list_of_names).difference(self._characters_interacted_with):
-            if l in char_list and l!=self.name:
+            if l in char_list and l != self.name:
                 added_character = l
                 self._characters_interacted_with[l] = 1
 
@@ -367,7 +437,7 @@ class MovieCharacter:
         logger.debug('The character ' + self.name + ' mentioned ' + name)
 
     def list_characters_interacted_with(self):
-        if len(self._characters_interacted_with)>0:
+        if len(self._characters_interacted_with) > 0:
             print 'The character ' + self.name + ' interacted with:'
 
             for char in self._characters_interacted_with:
