@@ -9,6 +9,13 @@
 import sqlite3
 
 def build_database(movie):
+    """
+    Builds three SQLite tables
+    movies - info relevant to movies
+    chars  - info relevant to chars
+    interactions - info relevant to interactions / mentions
+    You need to create a your_db_here_.db file for this to work
+    """
 
     #Variables for chars table
     df_id_1, df_names, df_gender, df_n_scenes_real, df_scenes_real = movie.build_table_chars()
@@ -34,7 +41,7 @@ def build_database(movie):
        (id_m                     INTEGER           PRIMARY KEY AUTOINCREMENT,
         name                     TEXT              NOT NULL
         );'''
-                 )
+                )
 
     #Data relevant to chars
     conn.execute('''CREATE TABLE chars
@@ -48,7 +55,7 @@ def build_database(movie):
         n_scenes_mention_descr   TEXT  ,
         FOREIGN KEY(id_m) REFERENCES movies(id_m)
         );'''
-                 )
+                )
 
     #Data relevant to char interactions / mentions
     #type = 0 - interaction
@@ -63,7 +70,7 @@ def build_database(movie):
         FOREIGN KEY(char_1_id) REFERENCES chars(id_c),
         FOREIGN KEY(char_2_id) REFERENCES chars(id_c)
         );'''
-                 )
+                )
 
     #to do - stop if movie has already been analyzed
 
@@ -79,7 +86,7 @@ def build_database(movie):
                   movie.title))
 
     #Getting id_m
-    cursor=conn.cursor()
+    cursor = conn.cursor()
     cursor.execute('SELECT MAX (id_m) FROM movies')
     id_m = cursor.fetchone()[0]
 
