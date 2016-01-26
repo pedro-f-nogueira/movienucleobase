@@ -7,7 +7,6 @@
 """
 
 import logging
-import itertools
 
 
 class MovieData:
@@ -296,6 +295,9 @@ class MovieData:
 
 
 class MovieCharacter:
+    """
+    Class with all the info relevant to the movie char
+    """
     def __init__(self, name):
         """
         Iniates all the varaibles inerent to the movie char
@@ -376,19 +378,19 @@ class MovieCharacter:
         self._gender = argx
 
     def add_characters_interacted_with(self, list_of_names, char_list):
-        # The function will accept a list of characters that the present
-        # character interacted during a scene.
-        #
-        # It is desirable to add all of these characters to the list but
-        # the list will also contain the present character as well. So we
-        # need to make sure to exclude it from the list.
-        #
-        # But it is also possible that the character speaks with himself
-        # in the whole scene. This scenario also counts as well, so we
-        # only add the character if it is the only element in the list.
-        logger = logging.getLogger(__name__)
+        """
+        The function will accept a list of characters that the present
+        character interacted during a scene.
 
-        added_character = ""
+        It is desirable to add all of these characters to the list but
+        the list will also contain the present character as well. So we
+        need to make sure to exclude it from the list.
+
+        But it is also possible that the character speaks with himself
+        in the whole scene. This scenario also counts as well, so we
+        only add the character if it is the only element in the list.
+        """
+        logger = logging.getLogger(__name__)
 
         # If the lists of names is empty, terminate the function immediately
         if len(list_of_names) == 0:
@@ -396,22 +398,26 @@ class MovieCharacter:
 
         # Detect which characters were already added as interactions and
         # increase the respective counters of interactions
-        for l in set(list_of_names).intersection(self._characters_interacted_with):
-            if l in self._characters_interacted_with and l != self.name:
-                added_character = l
-                self._characters_interacted_with[l] = self._characters_interacted_with[l] + 1
+        for iter1 in set(list_of_names).intersection(self._characters_interacted_with):
+            if iter1 in self._characters_interacted_with and iter1 != self.name:
+                self._characters_interacted_with[iter1] = \
+                    self._characters_interacted_with[iter1] + 1
 
         # Detect the characters that weren't added as interaction yet
-        for l in set(list_of_names).difference(self._characters_interacted_with):
-            if l in char_list and l != self.name:
-                added_character = l
-                self._characters_interacted_with[l] = 1
+        for iter2 in set(list_of_names).difference(self._characters_interacted_with):
+            if iter2 in char_list and iter2 != self.name:
+                added_character = iter2
+                self._characters_interacted_with[iter2] = 1
 
-        logger.debug('The character ' + self.name + ' interacted with: ' + l)
+        logger.debug('The character ' + self.name + ' interacted with: ' + added_character)
 
         return True
 
     def add_appeared_scene(self, scene_number):
+        """
+        This function adds an appeared scene to the object movie char
+        ex: Frodo appeared in scene 6
+        """
         logger = logging.getLogger(__name__)
 
         logger.debug('The character ' + self.name + 
@@ -423,6 +429,10 @@ class MovieCharacter:
             self._appeared_scenes = [scene_number]
 
     def add_mentioned_character(self, name):
+        """
+        This function adds an mentioned scene to the object movie char
+        ex: Frodo mentioned Sam
+        """
         logger = logging.getLogger(__name__)
 
         if name == self.name:
@@ -437,6 +447,9 @@ class MovieCharacter:
         logger.debug('The character ' + self.name + ' mentioned ' + name)
 
     def list_characters_interacted_with(self):
+        """
+        Lists all the chars the char in question interacted with
+        """
         if len(self._characters_interacted_with) > 0:
             print 'The character ' + self.name + ' interacted with:'
 
@@ -447,6 +460,9 @@ class MovieCharacter:
             print 'The character ' + self.name + ' did\'t have any interactions'
 
     def list_mentioned_characters(self):
+        """
+        Lists all the chars the char mentioned
+        """
         if len(self.mentioned_characters):
             print 'The character ' + self.name + ' mentioned the following characters:'
 
@@ -457,6 +473,9 @@ class MovieCharacter:
             print 'The character did not mentioned anyone.'
 
     def list_appeared_scenes(self):
+        """
+        Lists all the scenes the char appeared in
+        """
         if self.appeared_scenes:
             print 'The character ' + self.name + ' appeared in the following scenes: ' + \
                 ', '.join(str(i) for i in self.appeared_scenes)
