@@ -84,22 +84,22 @@ def load_config_file(filename, section):
 
     logger = logging.getLogger(__name__)
 
-    Config = ConfigParser.ConfigParser()
+    config = ConfigParser.ConfigParser()
 
-    Config.read(filename)
+    config.read(filename)
 
-    dict = {}
+    dicte = {}
 
-    for option in Config.options(section):
+    for option in config.options(section):
         try:
-            dict[option] = Config.get(section, option)
+            dicte[option] = config.get(section, option)
 
-            if dict[option] == -1:
+            if dicte[option] == -1:
                 logger.info('Option not found: %s' % option)
         except:
             logger.info('Raising exception in option: %s' % option)
-            dict[option] = None
+            dicte[option] = None
 
-    return dict
+    return dicte
 
 
