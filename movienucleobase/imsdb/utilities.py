@@ -32,12 +32,13 @@ def valid_movie_character(possible_movie_character_name):
     logger = logging.getLogger(__name__)
 
     # Consider valid characters the names that are centered
-    numberWhitespaces = len(possible_movie_character_name) - len(possible_movie_character_name.lstrip(' '))
+    number_whitespaces = len(possible_movie_character_name) - \
+                        len(possible_movie_character_name.lstrip(' '))
 
-    if numberWhitespaces<20 or numberWhitespaces>30:
+    if number_whitespaces < 20 or number_whitespaces > 30:
         logger.debug('Rejecting possible invalid character due to the number ' +
                      'of whitespaces at the start of the string ' +
-                     '(' + str(numberWhitespaces) + '): ' + possible_movie_character_name)
+                     '(' + str(number_whitespaces) + '): ' + possible_movie_character_name)
         return False
     else:
         return True
@@ -68,7 +69,6 @@ def strip_unwanted_strings(movie_character_name):
 
 def similar_character_already_added(movie_characters_list, movie_character_name):
     """Checks if a similar name was already added to the collected characters.
-    
     The API assumes that the movie script has misspelled character names,
     so this function checks if the new candidate to movie character has a
     similar character name already added to the list.
@@ -92,20 +92,23 @@ def similar_character_already_added(movie_characters_list, movie_character_name)
     # The "Fellowship of the Ring" script sometimes misspells "FRODO" as
     # "FRO DO" this function attempts to fix that
     for character in movie_characters_list:
-        similarityRatio = difflib.SequenceMatcher(None,
-                                                  movie_character_name.lower(),
-                                                  character.name.split(' ')[0].lower())
-        similarityRatio = similarityRatio.ratio()
+        similarity_ratio = difflib.SequenceMatcher(None,
+                                                   movie_character_name.lower(),
+                                                   character.name.split(' ')[0].lower())
+        similarity_ratio = similarity_ratio.ratio()
 
-        if similarityRatio>0.9 and similarityRatio<1.0:
+        if similarity_ratio > 0.9 and similarity_ratio < 1.0:
             logger.debug('Possible character already added: ' + \
                          movie_character_name)
             return True
-    else:
-        return False
+        else:
+            return False
 
 
 def check_mentioned_characters(char_from_scene, movie_line, characters_list):
+    """
+    Checks for mentioned movies characters and adds them to the list
+    """
     for mentioned_character in characters_list:
         # Find which characters are mentioned in the movie line
         if mentioned_character.name.lower() in movie_line.lower():
