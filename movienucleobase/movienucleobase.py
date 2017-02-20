@@ -16,8 +16,9 @@ import imsdb.filehandlers
 import imsdb.dataextraction
 import imsdb.dataadjustment
 import imsdb.datastructures
-import imsdb.DataFrame
-import imsdb.dataexcel
+import imsdb.gen_database
+import imsdb.gen_dataframe
+import imsdb.social_net as social_net
 
 if __name__ == '__main__':
     # Process arguments from the command line
@@ -31,9 +32,6 @@ if __name__ == '__main__':
 
     PARSER.add_argument('--nscenes',
                         help='Number of scenes to process')
-
-    PARSER.add_argument('--movie_title',
-                        help='The title of the movie')
 
     PARSER.add_argument('--sub_wikia',
                         help='The subwikia associated to the movie')
@@ -52,14 +50,15 @@ if __name__ == '__main__':
     # Setup the logging system
     LOGCONFIG = 'logging_config.ini'
     LOGFILE = 'movienucleobase.log'
+
     logging.config.fileConfig(LOGCONFIG, defaults={'logfilename': LOGFILE})
     LOGGER = logging.getLogger(__name__)
 
-    MOVIE = imsdb.datastructures.MovieData(ARGS.movie_title, ARGS.sub_wikia)
+    MOVIE = imsdb.datastructures.MovieData(ARGS.sub_wikia)
 
     # Loads the IMSDb movie script into a list
     # The script terminates if the script is empty
-    IMSDB_MOVIE_SCRIPT = imsdb.filehandlers.open_movie_script(ARGS.filename)
+    IMSDB_MOVIE_SCRIPT, MOVIE.title = imsdb.filehandlers.open_movie_script(ARGS.filename)
 
     if not IMSDB_MOVIE_SCRIPT:
         print "Error: Empty movie script."
@@ -75,7 +74,7 @@ if __name__ == '__main__':
     MOVIE.clean_up_character_list()
 
     # Identify the gender of each character
-    imsdb.dataextraction.get_gender(MOVIE.characters, ARGS)
+    # imsdb.dataextraction.get_gender(MOVIE.characters, ARGS)
 
     # Return the list of the scenes in the movie
     MOVIE.scenes = imsdb.dataextraction.extract_scenes(IMSDB_MOVIE_SCRIPT)
@@ -93,7 +92,6 @@ if __name__ == '__main__':
 
     # List all info
     #movie.print_info()
-    print ''
 
     #for character in movie.characters:
         #character.list_characters_interacted_with()
@@ -102,10 +100,20 @@ if __name__ == '__main__':
 
     # --- This part  of the main script if for data purposes ---
 
-    #Builds excel
-    imsdb.dataexcel.build_excel_chars(MOVIE)
-    imsdb.dataexcel.build_excel_interactions(MOVIE)
-    imsdb.dataexcel.build_excel_mentions(MOVIE)
+    # Builds dataframes
+    df_chars = imsdb.gen_dataframe.build_df_chars(MOVIE)
+    df_interactions = imsdb.gen_dataframe.build_df_interactions(MOVIE)
+    df_mentions = imsdb.gen_dataframe.build_df_mentions(MOVIE)
+
+    # Outputting to excel / database
+    # wdata.write_df(df_chars, 'chars')
+    # wdata.write_df(df_interactions, 'interactions')
+    # wdata.write_df(df_chars, 'mentions')
+
+    df_metrics = social_net.return_metrics(df_chars, df_interactions)
+
+    # Creating a JSON for the social network
+    imsdb.gen_dataframe.write_nodes_edges_to_json(df_metrics, df_interactions, 'ARGS.filename')
 
     #Builds database
-    imsdb.DataFrame.build_database(MOVIE)
+    imsdb.gen_database.build_database(MOVIE)

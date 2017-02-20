@@ -8,6 +8,7 @@
 
 import logging
 import ConfigParser
+import re
 
 
 def open_movie_script(filename):
@@ -28,8 +29,10 @@ def open_movie_script(filename):
 
     logger = logging.getLogger(__name__)
 
+    path = 'scripts\\' + filename
+
     try:
-        with open(filename, 'r') as html_file:
+        with open(path, 'r') as html_file:
             # Remove all new lines char, we don't need them since each line
             # will represent a new index in the list
             imsdb_movie_script = html_file.read().replace('\n', '')
@@ -46,16 +49,22 @@ def open_movie_script(filename):
                         html_code
                 return
 
+            regex_title = ur'(?<=<title>)(.*)(?=<\/title>)'
+
+            movie_title = re.search(regex_title, imsdb_movie_script)
+
             imsdb_movie_script = imsdb_movie_script.split(html_code)[1]
 
             logger.info('File successfully opened: ' + filename)
 
-            return imsdb_movie_script
+            return imsdb_movie_script, movie_title.group(1)
     except:
         raise
 
+
 def load_config_file(filename, section):
-    """Receives the name of a configuration file to tweak the script's behavior.
+    """
+    Receives the name of a configuration file to tweak the script's behavior.
     
     At the moment, the only configuration used is for loading the character's
     gender instead of querying freebase's API, since the API access is fairy

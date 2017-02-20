@@ -11,6 +11,7 @@ import logging
 import imsdb.datastructures
 import imsdb.utilities
 
+
 def extract_characters(imsdb_movie_script):
     """ Extract the movie characters from a movie script into a list.
 
@@ -75,12 +76,11 @@ def extract_characters(imsdb_movie_script):
         # TODO: Remove this hack and fix the issue
         # The movie script as characters represented as "Merry & Pippin"
         # And the Regex code is extracting empty strings as characters
-        if '&amp;' in movie_character_name or not movie_character_name:
+        if '&' in movie_character_name or not movie_character_name:
             logger.debug('Rejecting possible invalid character: ' + movie_character_name)
             continue
 
-        if imsdb.utilities.similar_character_already_added(movie_characters_list,
-                                                           movie_character_name):
+        if imsdb.utilities.similar_character_already_added(movie_characters_list, movie_character_name):
             continue
 
         # Check if the character was already collected in the list
@@ -92,6 +92,7 @@ def extract_characters(imsdb_movie_script):
             movie_characters_list.append(imsdb.datastructures.MovieCharacter(movie_character_name))
 
     return movie_characters_list
+
 
 def extract_scenes(imsdb_movie_script):
     """Parse the movie script and collect all movie scenes in the movie script.
@@ -148,6 +149,7 @@ def extract_scenes(imsdb_movie_script):
         movie_scenes_list.append(mscene.group('movie_text'))
      
     return movie_scenes_list
+
 
 def process_movie_single_scene(single_scene, movie_characters_list, scene_number):
     """Parse a single movie scene and extract the interactions between the
@@ -235,12 +237,14 @@ def process_movie_single_scene(single_scene, movie_characters_list, scene_number
 
     return characters_interacted_with
 
+
 def get_real_name_and_id(characters, movie):
     """
     Gets the real name of the char from the wikia
     Adds an id to that char
     """
     identi = 0
+
     for character in characters:
         character.real_name = imsdb.dataadjustment.retrieve_character_real_name(
             movie.sub_wikia,
@@ -257,6 +261,7 @@ def get_real_name_and_id(characters, movie):
             real_name_list.append(character.real_name)
         else:
             movie.characters.remove(character)
+
 
 def get_gender(characters, args):
     """

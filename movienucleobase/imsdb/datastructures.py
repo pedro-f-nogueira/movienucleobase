@@ -23,7 +23,7 @@ class MovieData:
         scenes (list of str): List of all scenes from the movie
     """
 
-    def __init__(self, title, sub_wikia):
+    def __init__(self, sub_wikia):
         """This function initializes the movie information.
         
         Args:
@@ -34,7 +34,7 @@ class MovieData:
             None
         """
 
-        self._title = title
+        #self._title = title
         self._sub_wikia = sub_wikia
 
     @property
@@ -150,50 +150,33 @@ class MovieData:
         source_id_list = []
         target_id_list = []
         weight_list = []
-
-        #inserts the first element - needed for verification to work
-        # to be reviewed - not proud  :(
-        for source in self.characters:
-            for target, value in source.characters_interacted_with.iteritems():
-                #Appends source and target names
-                source_name_list.append(source.name)
-                target_name_list.append(target)
-
-                #Appends source and target id's
-                source_id_list.append(source.id)
-
-                for char in self.characters:
-                    if char.name == target:
-                        target_id_list.append(char.id)
-                        break
-
-                #Appends intereraction weigth
-                weight_list.append(value)
-
-                break
-            break
+        interactions_list = ['']
 
         for source in self.characters:
             for target, value in source.characters_interacted_with.iteritems():
-                for i in range(len(source_name_list)):
-                    if source.name != source_name_list[i] and target != target_name_list[i]\
-                    or target != source_name_list[i] and source.name != target_name_list:
-                        #Appends source and target names
-                        source_name_list.append(source.name)
-                        target_name_list.append(target)
+                for target_name in self.characters:
 
-                        #Appends source and target id's
-                        source_id_list.append(source.id)
+                    if len(source.appeared_scenes) > 1 and len(target_name.appeared_scenes) > 1 \
+                            and target_name.name == target:
+                        interaction = str(target) + str(source.name)
+                        interaction_rev = str(source.name) + str(target)
 
-                        for char in self.characters:
-                            if char.name == target:
-                                target_id_list.append(char.id)
-                                break
+                        if interaction not in interactions_list and interaction_rev not in interactions_list:
+                            # Appends source and target names
+                            source_name_list.append(source.name)
+                            target_name_list.append(target)
 
-                        #Appends intereraction weigth
-                        weight_list.append(value)
+                            # Appends source and target id's
+                            source_id_list.append(source.id)
 
-                        break
+                            for char in self.characters:
+                                if char.name == target:
+                                    target_id_list.append(char.id)
+                                    break
+
+                            # Appends interaction weigth
+                            weight_list.append(value)
+                            interactions_list.append(interaction)
 
         logger.debug('Interaction:Source Name List\n' + ','.join(source_name_list))
         logger.debug('Interaction:Target Name List\n' + ','.join(target_name_list))
@@ -229,20 +212,23 @@ class MovieData:
 
         for source in self.characters:
             for target, value in source.mentioned_characters.iteritems():
-                #Appends source and target names
-                source_name_list.append(source.name)
-                target_name_list.append(target)
+                for target_name in self.characters:
+                    if len(source.appeared_scenes) > 1 and len(target_name.appeared_scenes) > 1 \
+                            and target_name.name == target:
+                        # Appends source and target names
+                        source_name_list.append(source.name)
+                        target_name_list.append(target)
 
-                #Appends source and target id's
-                source_id_list.append(source.id)
+                        # Appends source and target id's
+                        source_id_list.append(source.id)
 
-                for char in self.characters:
-                    if char.name == target:
-                        target_id_list.append(char.id)
-                        break
+                        for char in self.characters:
+                            if char.name == target:
+                                target_id_list.append(char.id)
+                                break
 
-                #Appends intereraction weigth
-                weight_list.append(value)
+                        # Appends intereraction weigth
+                        weight_list.append(value)
 
         logger.debug('Mention:Source Name List\n' + ','.join(source_name_list))
         logger.debug('Mention:Target Name List\n' + ','.join(target_name_list))
@@ -273,17 +259,14 @@ class MovieData:
         df_gender = []
         df_n_scenes_int = []
         df_scenes_int = []
-        #df_n_scenes_men = []
-        #df_scenes_men = []
 
         for char in self.characters:
-            df_id_1.append(char.id)
-            df_names.append(char.name)
-            df_gender.append(char.gender)
-            df_n_scenes_int.append(len(char.appeared_scenes))
-            df_scenes_int.append(char.appeared_scenes)
-            #df_n_scenes_men.append(len(char.appeared_scenes))
-            #df_scenes_men.append(char.appeared_scenes)
+            if len(char.appeared_scenes) > 1:
+                df_id_1.append(char.id)
+                df_names.append(char.name)
+                df_gender.append(char.gender)
+                df_n_scenes_int.append(len(char.appeared_scenes))
+                df_scenes_int.append(char.appeared_scenes)
 
         logger.debug('Char Id \n' + ','.join(map(str, df_id_1)))
         logger.debug('Char Name\n' + ','.join(df_names))
@@ -300,7 +283,7 @@ class MovieCharacter:
     """
     def __init__(self, name):
         """
-        Iniates all the varaibles inerent to the movie char
+        Iniates all the variables inerent to the movie char
         """
         self._id = id
         self._name = name
@@ -393,15 +376,14 @@ class MovieCharacter:
         logger = logging.getLogger(__name__)
 
         # If the lists of names is empty, terminate the function immediately
-        if len(list_of_names) == 0:
+        if len(list_of_names) <= 1:
             return False
 
         # Detect which characters were already added as interactions and
         # increase the respective counters of interactions
         for iter1 in set(list_of_names).intersection(self._characters_interacted_with):
             if iter1 in self._characters_interacted_with and iter1 != self.name:
-                self._characters_interacted_with[iter1] = \
-                    self._characters_interacted_with[iter1] + 1
+                self._characters_interacted_with[iter1] += 1
 
         # Detect the characters that weren't added as interaction yet
         for iter2 in set(list_of_names).difference(self._characters_interacted_with):
@@ -409,7 +391,7 @@ class MovieCharacter:
                 added_character = iter2
                 self._characters_interacted_with[iter2] = 1
 
-        logger.debug('The character ' + self.name + ' interacted with: ' + added_character)
+        #logger.debug('The character ' + self.name + ' interacted with: ' + added_character)
 
         return True
 

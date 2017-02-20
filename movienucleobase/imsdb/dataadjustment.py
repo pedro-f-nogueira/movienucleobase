@@ -55,23 +55,27 @@ def retrieve_character_real_name(sub_wikia, movie_character_name):
 
     black_list = ['List of']
 
-    real_name = wikia.search(sub_wikia, movie_character_name)[0]
+    try:
+        real_name = wikia.search(sub_wikia, movie_character_name)[0]  # here
 
-    logger.info('Resolved ' + movie_character_name + ' to ' + real_name)
+        logger.info('Resolved ' + movie_character_name + ' to ' + real_name)
 
-    if __builtin__.any(x in real_name for x in black_list):
-        logger.info('Rejecting possible invalid character.' +
-                    ' Name: ' + movie_character_name +
-                    ' ; Real name: ' + real_name)
-        real_name = None
-    else:
-        # Removing any "(disambiguation)" sub-strings
-        real_name = real_name.split('(')[0].strip(' ')
+        if __builtin__.any(x in real_name for x in black_list):
+            logger.info('Rejecting possible invalid character.' +
+                        ' Name: ' + movie_character_name +
+                        ' ; Real name: ' + real_name)
+            real_name = None
+        else:
+            # Removing any "(disambiguation)" sub-strings
+            real_name = real_name.split('(')[0].strip(' ')
 
-    # Remove any special accents from the string
-    real_name = unidecode.unidecode(unicode(real_name))
+        # Remove any special accents from the string
+        real_name = unidecode.unidecode(unicode(real_name))
 
-    return real_name
+        return real_name
+
+    except ValueError:
+        return 'problematic character'
 
 
 def retrieve_character_gender(real_name, api_key_path='api_key'):
